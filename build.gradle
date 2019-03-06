@@ -1,0 +1,37 @@
+plugins {
+    // Apply the application plugin to add support for building an application
+    id 'application'
+
+    // Apply the java plugin to add support for Java
+    id 'java'
+}
+
+group 'me.adiras'
+version '0.1.0'
+
+// Java version compatibility to use when compiling Java source
+sourceCompatibility = 1.8
+
+// Java version to generate classes for
+targetCompatibility = 1.8
+
+// Define the main class for the application
+mainClassName = 'me.adiras.ftprx.Application'
+
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // You can declare any Maven/Ivy/file repository here.
+    mavenCentral()
+}
+
+dependencies {
+    // Use JUnit test framework
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": mainClassName)
+    }
+}
