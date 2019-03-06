@@ -18,7 +18,6 @@ targetCompatibility = 1.8
 // Define the main class for the application
 mainClassName = 'me.adiras.ftprx.Application'
 
-
 // In this section you declare where to find the dependencies of your project
 repositories {
     // You can declare any Maven/Ivy/file repository here.
@@ -33,5 +32,15 @@ dependencies {
 jar {
     manifest {
         attributes("Main-Class": mainClassName)
+    }
+}
+
+startScripts {
+    classpath += files('src/dist/config/server.properties')
+    doLast {
+        def windowsScriptFile   = file getWindowsScript()
+        def unixScriptFile      = file getUnixScript()
+        windowsScriptFile.text  = windowsScriptFile.text.replace('%APP_HOME%\\lib\\server.properties', '%APP_HOME%\\config')
+        unixScriptFile.text     = unixScriptFile.text.replace('$APP_HOME/lib/server.properties', '$APP_HOME/config')
     }
 }
