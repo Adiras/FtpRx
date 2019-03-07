@@ -24,7 +24,7 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
 
 ## License
 
-    Copyright 2016, FtpRx Contributors
+    Copyright 2019, FtpRx Contributors
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -1,11 +1,27 @@
+/*
+ * Copyright 2019, FtpRx Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.adiras.ftprx.core;
 
-import me.adiras.ftprx.Connection;
-import me.adiras.ftprx.NetworkListener;
-import me.adiras.ftprx.Response;
+import me.adiras.ftprx.*;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +33,7 @@ public class WorkerThread implements Runnable, Connection {
     private Socket clientSocket;
     private NetworkListener listener;
 
-    private BufferedReader reader;
+    private DataInputStream reader;
     private BufferedWriter writer;
 
     public WorkerThread(Socket clientSocket, NetworkListener listener) {
@@ -25,23 +41,37 @@ public class WorkerThread implements Runnable, Connection {
         this.listener = listener;
     }
 
-    private void handleReceiveInput(String input) {
-        listener.onRequestReceive(this, input);
+    private void handleReceiveData(byte[] data) {
+        listener.onRequestReceive(this, data);
+    }
+
+    private void initializeStreams() throws IOException {
+        reader = new DataInputStream(clientSocket.getInputStream());
+        writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
     }
 
     @Override
     public void run() {
         logger.log(Level.INFO, "New worker thread created [{0}]", Thread.currentThread().getName());
         try {
-            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-
+            initializeStreams();
             listener.onConnectionEstablishment(this);
 
-            while (clientSocket != null && !clientSocket.isClosed()) {
-                reader.lines().forEach(this::handleReceiveInput);
-            }
+            int bufferSize = Integer.parseInt(
+                    ServerProperties.get(Property.BUFFER_SIZE));
 
+            ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+            while (clientSocket != null && !clientSocket.isClosed()) {
+                if (reader.available() == 0) continue;
+                byte[] data = buffer.array();
+                reader.read(data);
+                for (byte b : data) {
+                    if (b != 0) {
+                        handleReceiveData(data);
+                        break;
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -63,5 +93,10 @@ public class WorkerThread implements Runnable, Connection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public UUID getUUID() {
+        return UUID.randomUUID();
     }
 }

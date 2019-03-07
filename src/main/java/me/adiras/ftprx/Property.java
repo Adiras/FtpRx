@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx.command;
+package me.adiras.ftprx;
 
-import me.adiras.ftprx.Connection;
-import me.adiras.ftprx.core.ServerContext;
+public enum Property {
+    NAME("name"),
+    PORT("port"),
+    BUFFER_SIZE("buffer.size"),
+    SERVER_SOCKET_BACKLOG("server.socket.backlog");
 
-public interface CommandHandler {
-    void process(ServerContext context, Connection connection, String argument);
+    private final String key;
+
+    Property(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
 }
