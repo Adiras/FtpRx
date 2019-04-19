@@ -16,6 +16,8 @@
 
 package me.adiras.ftprx;
 
+import java.util.stream.Stream;
+
 public class Response {
     private String code;
     private String argument;

@@ -16,27 +16,66 @@
 
 package me.adiras.ftprx.core;
 
-import me.adiras.ftprx.*;
+import me.adiras.ftprx.Connection;
+import me.adiras.ftprx.NetworkListener;
+import me.adiras.ftprx.Response;
 import me.adiras.ftprx.command.RequestDispatcher;
-import me.adiras.ftprx.command.UserService;
+import me.adiras.ftprx.core.threading.ServerListenerRunnable;
+import me.adiras.ftprx.core.threading.WorkerThread;
+import me.adiras.ftprx.core.threading.WorkerThreadManager;
 
-import java.util.logging.Logger;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.Charset;
 
-public class Server extends MultithreadServer implements ServerContext, NetworkListener {
-    private final static Logger logger = Logger.getLogger(Server.class.getName());
+import static org.tinylog.Logger.*;
 
-    private UserService userService = new UserService();
-    private RequestDispatcher dispatcher;
+/**
+ * Main Server class. Listening on a port for client. If there is a client,
+ * starts a new Thread and goes back to listening for further clients.
+ */
+public class Server implements NetworkListener {
+    private static final int MAXIMUM_WORKER_THREAD_POOL_SIZE = 2;
+    private static final int PORT = 21;
 
-    public Server() {
-        super(new ServerSocketFactory());
-        this.dispatcher = new RequestDispatcher(this);
-        setListener(this);
+    private WorkerThreadManager workerThreadPool = new WorkerThreadManager(MAXIMUM_WORKER_THREAD_POOL_SIZE);
+    private RequestDispatcher requestDispatcher = new RequestDispatcher();
+    private ServerSocket serverSocket;
+    private Thread listenerThread;
+
+    public void start() {
+        info("Starting server...");
+
+        try {
+            // Creates a server socket, bound to the specified port.
+            serverSocket = new ServerSocket(PORT);
+            info("Server running at port {}", PORT);
+
+            launchListenerThread();
+
+        } catch (Exception e) {
+            error("Unable to start server: {}", e.getMessage());
+        }
+    }
+
+    private void launchListenerThread() {
+        listenerThread = new Thread(new ServerListenerRunnable(this, serverSocket));
+        listenerThread.start();
+    }
+
+    /**
+     * The method is called if the new client connects to the sockets
+     * @param socket client socket to be handled
+     */
+    public void connectionRequest(Socket socket) {
+        trace("Connection request: {}", socket.getInetAddress().getHostAddress());
+        workerThreadPool.launchThread(new WorkerThread(socket, this));
     }
 
     @Override
-    public void onRequestReceive(Connection connection, byte[] data) {
-        dispatcher.handleRequest(connection, data);
+    public void onDataReceive(Connection connection, byte[] data) {
+        String request = new String(data, Charset.forName("UTF-8"));
+        requestDispatcher.handleRequest(connection, request);
     }
 
     @Override
@@ -45,10 +84,5 @@ public class Server extends MultithreadServer implements ServerContext, NetworkL
                 .code("220")
                 .argument("Service ready for new user.")
                 .build());
-    }
-
-    @Override
-    public UserService getUserService() {
-        return userService;
     }
 }

@@ -16,9 +16,6 @@
 
 package me.adiras.ftprx;
 
-import java.util.UUID;
-
 public interface Connection {
     void sendResponse(Response response);
-    UUID getUUID();
 }

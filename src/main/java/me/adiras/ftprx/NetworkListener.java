@@ -17,6 +17,6 @@
 package me.adiras.ftprx;
 
 public interface NetworkListener {
-    void onRequestReceive(Connection connection, byte[] data);
+    void onDataReceive(Connection connection, byte[] data);
     void onConnectionEstablishment(Connection connection);
 }

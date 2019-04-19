@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx.threading;
+package me.adiras.ftprx.command;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import me.adiras.ftprx.Connection;
+import me.adiras.ftprx.command.CommandHandler;
+import me.adiras.ftprx.core.ServerContext;
 
-public class ThreadManager {
-    private static final ExecutorService service = Executors.newCachedThreadPool();
-
-    public static Future launchThread(final Runnable runnable) {
-        return service.submit(runnable);
+public class NullCommandHandler implements CommandHandler {
+    @Override
+    public void process(ServerContext context, Connection connection, String argument) {
+        // Null Object pattern implementation
     }
 }

@@ -17,36 +17,24 @@
 package me.adiras.ftprx.command;
 
 import me.adiras.ftprx.*;
-import me.adiras.ftprx.core.ServerContext;
 
-import java.nio.charset.Charset;
 import java.util.Objects;
 
-import static me.adiras.ftprx.util.ControlCharacters.*;
+import static org.tinylog.Logger.*;
 
 public class RequestDispatcher {
-    private ServerContext context;
-
-    public RequestDispatcher(ServerContext context) {
-        this.context = context;
-    }
 
     private CommandHandler createHandlerInstance(Class<? extends CommandHandler> handlerClass) {
         try {
             return handlerClass.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return new NullCommandHandler();
     }
 
-    public void handleRequest(Connection connection, byte[] data) {
-        String request = new String(data, Charset.forName("UTF-8"));
-        String trimmedRequest = request.substring(0, request.indexOf("\u0000"));
-
-        Command command = CommandResolver.resolve(trimmedRequest);
+    public void handleRequest(Connection connection, String request) {
+        Command command = CommandResolver.resolve(request);
         if (Objects.isNull(command)) {
             connection.sendResponse(Response.builder()
                     .code("502")
@@ -55,12 +43,7 @@ public class RequestDispatcher {
             return;
         }
 
-        String readyRequest = trimmedRequest
-                .replace(command.getLabel(), "")
-                .replace(SP, "")
-                .replace(CRLF, "");
-
         createHandlerInstance(command.getHandler())
-                .process(context, connection, readyRequest);
+                .process(null, connection, request);
     }
 }

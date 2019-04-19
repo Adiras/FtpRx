@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx;
+package me.adiras.ftprx.command;
 
-import me.adiras.ftprx.command.CommandHandler;
 import me.adiras.ftprx.command.rfc959.UserCommandHandler;
 
 public enum Command {
-//    USER("USER", "USER\\x20[\\x00-\\x7F&&[^\\x0D\\x0A]]*\\x0D\\x0A", UserCommandHandler.class),
     USER("USER", "USER <SP> <username> <CRLF>", UserCommandHandler.class),
     PASS("PASS", "PASS <SP> <username> <CRLF>"),
     ACCT("ACCT", "ACCT <SP> <account-information> <CRLF>");

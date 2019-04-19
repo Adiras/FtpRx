@@ -17,44 +17,42 @@
 package me.adiras.ftprx.command.rfc959;
 
 import me.adiras.ftprx.Connection;
-import me.adiras.ftprx.Response;
 import me.adiras.ftprx.command.CommandHandler;
 import me.adiras.ftprx.core.ServerContext;
 
 public class UserCommandHandler implements CommandHandler {
     @Override
-    public void process(ServerContext context, Connection connection, String argument) {
-        String username = argument;
-
-        boolean authenticated = context.getUserService().isUserAssignToAnyConnection(username);
-        if (authenticated) {
-            connection.sendResponse(Response.builder()
-                    .code("331")
-                    .argument("User logged in.")
-                    .build());
-            return;
-        }
-
-        boolean needsPassword = context.getUserService().isUserNeedPassword(username);
-        if (needsPassword) {
-            connection.sendResponse(Response.builder()
-                    .code("331")
-                    .argument("User name okay, need password.")
-                    .build());
-        } else {
-            boolean exists = context.getUserService().isUserExists(username);
-            if (exists) {
-                context.getUserService().assignUserToConnection(username, connection);
-                connection.sendResponse(Response.builder()
-                        .code("230")
-                        .argument("User logged in.")
-                        .build());
-            } else {
-                connection.sendResponse(Response.builder()
-                        .code("331")
-                        .argument("Not logged in..")
-                        .build());
-            }
-        }
+    public void process(ServerContext context, Connection connection, String request) {
+//
+//        boolean authenticated = context.getUserService().isUserAssignToAnyConnection(username);
+//        if (authenticated) {
+//            connection.sendResponse(Response.builder()
+//                    .code("331")
+//                    .argument("User logged in.")
+//                    .build());
+//            return;
+//        }
+//
+//        boolean needsPassword = context.getUserService().isUserNeedPassword(username);
+//        if (needsPassword) {
+//            connection.sendResponse(Response.builder()
+//                    .code("331")
+//                    .argument("User name okay, need password.")
+//                    .build());
+//        } else {
+//            boolean exists = context.getUserService().isUserExists(username);
+//            if (exists) {
+//                context.getUserService().assignUserToConnection(username, connection);
+//                connection.sendResponse(Response.builder()
+//                        .code("230")
+//                        .argument("User logged in.")
+//                        .build());
+//            } else {
+//                connection.sendResponse(Response.builder()
+//                        .code("331")
+//                        .argument("Not logged in..")
+//                        .build());
+//            }
+//        }
     }
 }

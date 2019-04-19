@@ -20,10 +20,24 @@ import me.adiras.ftprx.core.Server;
 
 public class Application {
     public static void main(String[] args) {
+        printBanner();
         launchServer();
     }
 
     private static void launchServer() {
         new Server().start();
+    }
+
+    private static void printBanner() {
+        System.out.println(
+                "  ______ _         _____\n" +
+                " |  ____| |       |  __ \\       \n" +
+                " | |__  | |_ _ __ | |__) |__  __\n" +
+                " |  __| | __| '_ \\|  _  / \\ \\/ /\n" +
+                " | |    | |_| |_) | | \\ \\  >  <\n" +
+                " |_|     \\__| .__/|_|  \\_\\/_/\\_\\\n" +
+                "            | |\n" +
+                "            |_|\n"
+        );
     }
 }

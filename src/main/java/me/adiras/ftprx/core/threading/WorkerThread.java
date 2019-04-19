@@ -14,35 +14,36 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx.core;
+package me.adiras.ftprx.core.threading;
 
 import me.adiras.ftprx.*;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Arrays;
 
-import static me.adiras.ftprx.util.ControlCharacters.*;
+import static org.tinylog.Logger.*;
 
+/**
+ * The class is responsible to service one client connection.
+ */
 public class WorkerThread implements Runnable, Connection {
-    private static final Logger logger = Logger.getLogger(WorkerThread.class.getName());
-
-    private Socket clientSocket;
     private NetworkListener listener;
+    private Socket clientSocket;
 
+    // Will be used to get data from client.
     private DataInputStream reader;
+
+    // Will be used to send data to client.
     private BufferedWriter writer;
+
+    private long idleTimeout = 15000;
+    private long lastDataReceivedTime;
 
     public WorkerThread(Socket clientSocket, NetworkListener listener) {
         this.clientSocket = clientSocket;
         this.listener = listener;
-    }
-
-    private void handleReceiveData(byte[] data) {
-        listener.onRequestReceive(this, data);
+        lastDataReceivedTime = System.currentTimeMillis();
     }
 
     private void initializeStreams() throws IOException {
@@ -50,36 +51,46 @@ public class WorkerThread implements Runnable, Connection {
         writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
     }
 
+    /**
+     * Called after each received of data through the socket.
+     * @param data the buffer into which the data is stored
+     */
+    private void handleReceiveData(byte[] data) {
+        listener.onDataReceive(this, data);
+    }
+
+    private boolean running() {
+        return clientSocket != null && !clientSocket.isClosed();
+    }
+
     @Override
     public void run() {
-        logger.log(Level.INFO, "New worker thread created [{0}]", Thread.currentThread().getName());
+        debug("Client connected: {}", clientSocket.getInetAddress().getHostAddress());
+
         try {
             initializeStreams();
+
             listener.onConnectionEstablishment(this);
 
-            int bufferSize = Integer.parseInt(
-                    ServerProperties.get(Property.BUFFER_SIZE));
+            while (running()) {
+                long currentTime = System.currentTimeMillis();
+                if ((currentTime - lastDataReceivedTime) > idleTimeout) break;
 
-            ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-            while (clientSocket != null && !clientSocket.isClosed()) {
-                if (reader.available() == 0) continue;
-                byte[] data = buffer.array();
-                reader.read(data);
-                for (byte b : data) {
-                    if (b != 0) {
-                        handleReceiveData(data);
-                        break;
-                    }
+                int bufferSize = 1024;
+                byte[] buffer = new byte[bufferSize];
+                int read;
+                while((read = reader.read(buffer)) != -1) {
+                    handleReceiveData(Arrays.copyOf(buffer, read));
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            warn("Client disconnected: {} - {}", clientSocket.getInetAddress().getHostAddress(), e.getMessage());
         } finally {
             try {
                 reader.close();
                 writer.close();
                 clientSocket.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -88,15 +99,10 @@ public class WorkerThread implements Runnable, Connection {
     @Override
     public void sendResponse(Response response) {
         try {
-            writer.write(response.getCode() + SP + response.getArgument() + CRLF);
+            writer.write(response.getCode() + ' ' + response.getArgument() + '\r' + '\n');
             writer.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public UUID getUUID() {
-        return UUID.randomUUID();
     }
 }

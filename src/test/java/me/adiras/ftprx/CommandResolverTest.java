@@ -1,45 +1,35 @@
+/*
+ * Copyright 2019, FtpRx Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.adiras.ftprx;
 
-import org.junit.Test;
+import me.adiras.ftprx.command.Command;
+import me.adiras.ftprx.command.CommandResolver;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-import static me.adiras.ftprx.CommandResolver.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CommandResolverTest {
-
-    @Test
-    public void shouldReturnNormalizedString() {
-        assertEquals(normalize("<username>"), "[\\x00-\\x7F&&[^\\x0D\\x0A]]*");
-        assertEquals(normalize("<password>"), "[\\x00-\\x7F&&[^\\x0D\\x0A]]*");
-        assertEquals(normalize("<account-information>"), "[\\x00-\\x7F&&[^\\x0D\\x0A]]*");
-        assertEquals(normalize("<string>"), "[\\x00-\\x7F&&[^\\x0D\\x0A]]*");
-        assertEquals(normalize("<char>"), "[\\x00-\\x7F&&[^\\x0D\\x0A]]");
-        assertEquals(normalize("<marker>"), "[\\x21-7e]*");
-        assertEquals(normalize("<pr-string>"), "[\\x21-7e]*");
-        assertEquals(normalize("<pr-char>"), "[\\x21-7e]");
-        assertEquals(normalize("<byte-size>"), "[1-255]");
-        assertEquals(normalize("<host-port>"), "[1-255],[1-255],[1-255],[1-255],[1-255],[1-255],[1-255],[1-255]");
-        assertEquals(normalize("<host-number>"), "[1-255],[1-255],[1-255],[1-255]");
-        assertEquals(normalize("<port-number>"), "[1-255],[1-255]");
-        assertEquals(normalize("<number>"), "[1-255]");
-        assertEquals(normalize("<form-code>"), "[NTC]");
-        assertEquals(normalize("<structure-code>"), "[FRP]");
-        assertEquals(normalize("<mode-code>"), "[SBC]");
-        assertEquals(normalize("<pathname>"), "[\\x00-\\x7F&&[^\\x0D\\x0A]]*");
-        assertEquals(normalize("<decimal-integer>"), "[0-9]+(.[0-9]*)");
-    }
+class CommandResolverTest {
 
     @Test
-    public void shouldReturnUserCommand() {
-        assertEquals(resolve("USER \r\n"), "USER");
-        assertEquals(resolve("USER \r\n"), "USER");
-        assertEquals(resolve("USER username\r\n"), "USER");
-        assertEquals(resolve("USER username username\r\n"), "USER");
-        assertEquals(resolve("USER         \r\n"), "USER");
-        assertNull(resolve("USER"));
-        assertNull(resolve("USER\r"));
-        assertNull(resolve("USER\n"));
-        assertNull(resolve("USER\r\n"));
-        assertNull(resolve("USER-username\r\n"));
+    void shouldReturnUSERCommand() {
+        assertAll(
+                () -> assertEquals(Command.USER, CommandResolver.resolve("USER username\r\n")),
+                () -> assertEquals(Command.USER, CommandResolver.resolve("USER \r\n"))
+        );
     }
+
 }
