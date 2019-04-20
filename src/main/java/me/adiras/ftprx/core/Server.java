@@ -16,9 +16,7 @@
 
 package me.adiras.ftprx.core;
 
-import me.adiras.ftprx.Connection;
-import me.adiras.ftprx.NetworkListener;
-import me.adiras.ftprx.Response;
+import me.adiras.ftprx.*;
 import me.adiras.ftprx.command.RequestDispatcher;
 import me.adiras.ftprx.core.threading.ServerListenerRunnable;
 import me.adiras.ftprx.core.threading.WorkerThread;
@@ -34,14 +32,16 @@ import static org.tinylog.Logger.*;
  * Main Server class. Listening on a port for client. If there is a client,
  * starts a new Thread and goes back to listening for further clients.
  */
-public class Server implements NetworkListener {
+public class Server implements ServerContext, NetworkListener {
     private static final int MAXIMUM_WORKER_THREAD_POOL_SIZE = 2;
     private static final int PORT = 21;
 
     private WorkerThreadManager workerThreadPool = new WorkerThreadManager(MAXIMUM_WORKER_THREAD_POOL_SIZE);
-    private RequestDispatcher requestDispatcher = new RequestDispatcher();
+    private RequestDispatcher requestDispatcher = new RequestDispatcher(this);
     private ServerSocket serverSocket;
     private Thread listenerThread;
+
+    private AccountService accountService = new AccountService();
 
     public void start() {
         info("Starting server...");
@@ -84,5 +84,10 @@ public class Server implements NetworkListener {
                 .code("220")
                 .argument("Service ready for new user.")
                 .build());
+    }
+
+    @Override
+    public AccountService getAccountService() {
+        return accountService;
     }
 }

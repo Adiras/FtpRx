@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx.core;
+package me.adiras.ftprx;
 
-import me.adiras.ftprx.AccountService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-public interface ServerContext {
-    AccountService getAccountService();
+public class AccountRepository {
+    private List<Account> accounts = new ArrayList<>();
+
+    public AccountRepository() {
+        accounts.add(new Account("Kacper", Optional.of("p2r2")));
+    }
+
+    public Optional<Account> findAccountByUsername(String username) {
+        return accounts.stream()
+                .filter(account -> username.equals(account.getUsername()))
+                .findFirst();
+    }
 }

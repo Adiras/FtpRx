@@ -16,11 +16,12 @@
 
 package me.adiras.ftprx.command;
 
+import me.adiras.ftprx.command.rfc959.PassCommandHandler;
 import me.adiras.ftprx.command.rfc959.UserCommandHandler;
 
 public enum Command {
     USER("USER", "USER <SP> <username> <CRLF>", UserCommandHandler.class),
-    PASS("PASS", "PASS <SP> <username> <CRLF>"),
+    PASS("PASS", "PASS <SP> <username> <CRLF>", PassCommandHandler.class),
     ACCT("ACCT", "ACCT <SP> <account-information> <CRLF>");
 
     private final String label;

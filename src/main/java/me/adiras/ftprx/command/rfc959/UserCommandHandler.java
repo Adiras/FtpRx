@@ -17,12 +17,47 @@
 package me.adiras.ftprx.command.rfc959;
 
 import me.adiras.ftprx.Connection;
+import me.adiras.ftprx.Response;
 import me.adiras.ftprx.command.CommandHandler;
 import me.adiras.ftprx.core.ServerContext;
 
+import static org.tinylog.Logger.*;
+
 public class UserCommandHandler implements CommandHandler {
+
     @Override
     public void process(ServerContext context, Connection connection, String request) {
+        String username = request.substring(5, request.length() - 2);
+
+        if (username.isEmpty()) {
+            connection.sendResponse(Response.builder()
+                    .code("332")
+                    .argument("Need account for login.")
+                    .build());
+            return;
+        }
+
+        if (!context.getAccountService().isAccountExists(username)) {
+            connection.sendResponse(Response.builder()
+                    .code("230")
+                    .argument("Not logged in..")
+                    .build());
+            return;
+        }
+
+        if (context.getAccountService().isAccountNeedPassword(username)) {
+            connection.sendResponse(Response.builder()
+                    .code("331")
+                    .argument("User name okay, need password.")
+                    .build());
+            context.getAccountService().waitForAuthenticate(connection, username);
+        } else {
+            connection.sendResponse(Response.builder()
+                    .code("230")
+                    .argument("User logged in.")
+                    .build());
+        }
+
 //
 //        boolean authenticated = context.getUserService().isUserAssignToAnyConnection(username);
 //        if (authenticated) {

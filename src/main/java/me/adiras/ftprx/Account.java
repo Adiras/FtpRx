@@ -14,10 +14,32 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx.core;
+package me.adiras.ftprx;
 
-import me.adiras.ftprx.AccountService;
+import java.util.Optional;
 
-public interface ServerContext {
-    AccountService getAccountService();
+public class Account {
+    private String username;
+    private Optional<String> password;
+
+    public Account(String username) {
+        this(username, Optional.empty());
+    }
+
+    public Account(String username, Optional<String> password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Optional<String> getPassword() {
+        return password;
+    }
+
+    public boolean needPassword() {
+        return password.isPresent();
+    }
 }

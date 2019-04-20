@@ -17,12 +17,18 @@
 package me.adiras.ftprx.command;
 
 import me.adiras.ftprx.*;
+import me.adiras.ftprx.core.ServerContext;
 
 import java.util.Objects;
 
 import static org.tinylog.Logger.*;
 
 public class RequestDispatcher {
+    private ServerContext context;
+
+    public RequestDispatcher(ServerContext context) {
+        this.context = context;
+    }
 
     private CommandHandler createHandlerInstance(Class<? extends CommandHandler> handlerClass) {
         try {
@@ -43,7 +49,9 @@ public class RequestDispatcher {
             return;
         }
 
+        trace("{} request redirected to {}", command.getLabel(), command.getHandler().getSimpleName());
+
         createHandlerInstance(command.getHandler())
-                .process(null, connection, request);
+                .process(context, connection, request);
     }
 }
