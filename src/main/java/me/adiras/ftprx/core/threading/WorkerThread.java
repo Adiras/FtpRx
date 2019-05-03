@@ -16,9 +16,9 @@
 
 package me.adiras.ftprx.core.threading;
 
+import com.google.inject.Inject;
 import me.adiras.ftprx.*;
 
-import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -27,28 +27,19 @@ import static org.tinylog.Logger.*;
 /**
  * The class is responsible to service one client connection.
  */
-public class WorkerThread implements Runnable, Connection {
+public class WorkerThread extends Connection implements Runnable {
     private NetworkListener listener;
-    private Socket clientSocket;
 
-    // Will be used to get data from client.
-    private DataInputStream reader;
-
-    // Will be used to send data to client.
-    private BufferedWriter writer;
+    private ServerConfig config;
 
     private long idleTimeout = 15000;
     private long lastDataReceivedTime;
 
-    public WorkerThread(Socket clientSocket, NetworkListener listener) {
-        this.clientSocket = clientSocket;
+    public WorkerThread(Socket socket, NetworkListener listener, ServerConfig config) {
+        super(socket);
         this.listener = listener;
+        this.config = config;
         lastDataReceivedTime = System.currentTimeMillis();
-    }
-
-    private void initializeStreams() throws IOException {
-        reader = new DataInputStream(clientSocket.getInputStream());
-        writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
     }
 
     /**
@@ -60,23 +51,21 @@ public class WorkerThread implements Runnable, Connection {
     }
 
     private boolean running() {
-        return clientSocket != null && !clientSocket.isClosed();
+        return socket != null && !socket.isClosed();
     }
 
     @Override
     public void run() {
-        debug("Client connected: {}", clientSocket.getInetAddress().getHostAddress());
+        debug("Client connected: {}", socket.getInetAddress().getHostAddress());
 
         try {
-            initializeStreams();
-
             listener.onConnectionEstablishment(this);
 
             while (running()) {
                 long currentTime = System.currentTimeMillis();
                 if ((currentTime - lastDataReceivedTime) > idleTimeout) break;
 
-                int bufferSize = 1024;
+                int bufferSize = config.requestBufferSize();
                 byte[] buffer = new byte[bufferSize];
                 int read;
                 while((read = reader.read(buffer)) != -1) {
@@ -84,25 +73,15 @@ public class WorkerThread implements Runnable, Connection {
                 }
             }
         } catch (Exception e) {
-            warn("Client disconnected: {} - {}", clientSocket.getInetAddress().getHostAddress(), e.getMessage());
+            warn("Client disconnected: {} - {}", socket.getInetAddress().getHostAddress(), e.getMessage());
         } finally {
             try {
                 reader.close();
                 writer.close();
-                clientSocket.close();
+                socket.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    @Override
-    public void sendResponse(Response response) {
-        try {
-            writer.write(response.getCode() + ' ' + response.getArgument() + '\r' + '\n');
-            writer.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

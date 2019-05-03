@@ -16,8 +16,6 @@
 
 package me.adiras.ftprx.command;
 
-import me.adiras.ftprx.command.Command;
-
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 

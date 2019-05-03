@@ -30,8 +30,4 @@ public class WorkerThreadManager {
     public Future launchThread(WorkerThread thread) {
         return executor.submit(thread);
     }
-
-    public int getRunningThreadsCount() {
-        return executor.getActiveCount();
-    }
 }

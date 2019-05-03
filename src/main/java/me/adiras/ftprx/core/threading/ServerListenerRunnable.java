@@ -46,7 +46,7 @@ public class ServerListenerRunnable implements Runnable {
         while (listening()) {
             try {
                 // This method waits until a client connects to the server on the given port
-                server.connectionRequest(serverSocket.accept());
+                server.onConnectionRequest(serverSocket.accept());
             } catch (IOException e) {
                 e.printStackTrace();
             }

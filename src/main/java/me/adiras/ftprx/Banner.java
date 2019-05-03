@@ -16,30 +16,6 @@
 
 package me.adiras.ftprx;
 
-import java.util.Optional;
-
-public class Account {
-    private String username;
-    private Optional<String> password;
-
-    public Account(String username) {
-        this(username, Optional.empty());
-    }
-
-    public Account(String username, Optional<String> password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public Optional<String> getPassword() {
-        return password;
-    }
-
-    public boolean needPassword() {
-        return password.isPresent();
-    }
+public interface Banner {
+    void printBanner();
 }

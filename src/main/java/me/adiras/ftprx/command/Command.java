@@ -17,29 +17,24 @@
 package me.adiras.ftprx.command;
 
 import me.adiras.ftprx.command.rfc959.PassCommandHandler;
+import me.adiras.ftprx.command.rfc959.PwdCommandHandler;
 import me.adiras.ftprx.command.rfc959.UserCommandHandler;
 
 public enum Command {
-    USER("USER", "USER <SP> <username> <CRLF>", UserCommandHandler.class),
-    PASS("PASS", "PASS <SP> <username> <CRLF>", PassCommandHandler.class),
-    ACCT("ACCT", "ACCT <SP> <account-information> <CRLF>");
+    USER("USER <SP> <username> <CRLF>", UserCommandHandler.class),
+    PASS("PASS <SP> <username> <CRLF>", PassCommandHandler.class),
+    PWD("PWD <CRLF>", PwdCommandHandler.class);
 
-    private final String label;
     private final String grammar;
     private final Class<? extends CommandHandler> handler;
 
-    Command(String label, String grammar) {
-        this(label, grammar, NullCommandHandler.class);
+    Command(String grammar) {
+        this(grammar, NullCommandHandler.class);
     }
 
-    Command(String label, String grammar, Class<? extends CommandHandler> handler) {
-        this.label = label;
+    Command(String grammar, Class<? extends CommandHandler> handler) {
         this.grammar = grammar;
         this.handler = handler;
-    }
-
-    public String getLabel() {
-        return label;
     }
 
     public String getGrammar() {

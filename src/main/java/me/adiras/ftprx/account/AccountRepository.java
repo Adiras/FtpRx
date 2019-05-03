@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx;
+package me.adiras.ftprx.account;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class AccountRepository {
-    private List<Account> accounts = new ArrayList<>();
-
-    public AccountRepository() {
-        accounts.add(new Account("Kacper", Optional.of("p2r2")));
-    }
-
-    public Optional<Account> findAccountByUsername(String username) {
-        return accounts.stream()
-                .filter(account -> username.equals(account.getUsername()))
-                .findFirst();
-    }
+public interface AccountRepository {
+    List<Account> findAll();
+    Account findByUsername(String username);
 }

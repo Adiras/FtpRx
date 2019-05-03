@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx.command;
+package me.adiras.ftprx;
 
-import me.adiras.ftprx.*;
+import me.adiras.ftprx.command.Command;
+import me.adiras.ftprx.command.CommandHandler;
+import me.adiras.ftprx.command.CommandResolver;
+import me.adiras.ftprx.command.NullCommandHandler;
 import me.adiras.ftprx.core.ServerContext;
 
 import java.util.Objects;
@@ -48,8 +51,6 @@ public class RequestDispatcher {
                     .build());
             return;
         }
-
-        trace("{} request redirected to {}", command.getLabel(), command.getHandler().getSimpleName());
 
         createHandlerInstance(command.getHandler())
                 .process(context, connection, request);

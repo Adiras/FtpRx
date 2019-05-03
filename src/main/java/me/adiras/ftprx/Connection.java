@@ -16,6 +16,58 @@
 
 package me.adiras.ftprx;
 
-public interface Connection {
-    void sendResponse(Response response);
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.Objects;
+
+public class Connection {
+    private boolean authenticated = false;
+    private String assignedUsername;
+    private String currentDirectory;
+
+    protected Socket socket;
+
+    // Will be used to get data from client.
+    protected DataInputStream reader;
+
+    // Will be used to send data to client.
+    protected BufferedWriter writer;
+
+    public Connection(Socket socket) {
+        this.socket = socket;
+        try {
+            reader = new DataInputStream(socket.getInputStream());
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendResponse(Response response) {
+        try {
+            writer.write(response.getCode() + ' ' + response.getArgument() + '\r' + '\n');
+            writer.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
+
+    public String getAssignedUsername() {
+        return assignedUsername;
+    }
+
+    public boolean hasAssignedUsername() {
+        return Objects.nonNull(assignedUsername);
+    }
+
+    public void assignUsername(String assignedUsername) {
+        this.assignedUsername = assignedUsername;
+    }
 }

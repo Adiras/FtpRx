@@ -17,33 +17,13 @@
 package me.adiras.ftprx.command.rfc959;
 
 import me.adiras.ftprx.Connection;
-import me.adiras.ftprx.Response;
-import me.adiras.ftprx.account.Account;
 import me.adiras.ftprx.command.CommandHandler;
 import me.adiras.ftprx.core.ServerContext;
 
-public class PassCommandHandler implements CommandHandler {
+public class PwdCommandHandler implements CommandHandler {
 
     @Override
     public void process(ServerContext context, Connection connection, String request) {
-        String password = request.substring(5, request.length() - 2);
 
-        if (connection.isAuthenticated()) {
-            connection.sendResponse(Response.builder()
-                    .code("230")
-                    .argument("Logged in!")
-                    .build());
-            return;
-        }
-
-        Account userAccount = context.getAccountRepository().findByUsername(connection.getAssignedUsername());
-
-        if (context.getAuthenticator().verifyPassword(userAccount.getPassword(), password)) {
-            connection.sendResponse(Response.builder()
-                    .code("230")
-                    .argument("Logged in!")
-                    .build());
-            return;
-        }
     }
 }

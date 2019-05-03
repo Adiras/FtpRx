@@ -16,7 +16,10 @@
 
 package me.adiras.ftprx;
 
+import java.net.Socket;
+
 public interface NetworkListener {
+    void onConnectionRequest(Socket socket);
     void onDataReceive(Connection connection, byte[] data);
     void onConnectionEstablishment(Connection connection);
 }

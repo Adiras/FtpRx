@@ -16,19 +16,22 @@
 
 package me.adiras.ftprx;
 
-public enum Property {
-    NAME("name"),
-    PORT("port"),
-    BUFFER_SIZE("buffer.size"),
-    SERVER_SOCKET_BACKLOG("server.socket.backlog");
+import org.aeonbits.owner.Config;
 
-    private final String key;
+@Config.Sources({"classpath:server.properties"})
+public interface ServerConfig extends Config {
+    @Key("server.name")
+    String name();
 
-    Property(String key) {
-        this.key = key;
-    }
+    @Key("server.port")
+    int port();
 
-    public String getKey() {
-        return key;
-    }
+    @Key("server.maximum-worker-thread-pool-size")
+    int maximumWorkerThreadPoolSize();
+
+    @Key("server.request-buffer-size")
+    int requestBufferSize();
+
+    @Key("server.welcome-message")
+    String welcomeMessage();
 }

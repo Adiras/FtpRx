@@ -16,8 +16,10 @@
 
 package me.adiras.ftprx.core;
 
-import me.adiras.ftprx.AccountService;
+import me.adiras.ftprx.account.AccountRepository;
+import me.adiras.ftprx.security.Authenticator;
 
 public interface ServerContext {
-    AccountService getAccountService();
+    AccountRepository getAccountRepository();
+    Authenticator getAuthenticator();
 }

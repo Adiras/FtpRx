@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package me.adiras.ftprx;
+package me.adiras.ftprx.security;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import me.adiras.ftprx.core.Server;
+public class Authenticator {
 
-public class Application {
-    public static void main(String[] args) {
-        printBanner();
-        launchServer();
+    public boolean verifyPassword(String hashed, String unhashed) {
+        return hashed.equals(hash(unhashed));
     }
 
-    private static void launchServer() {
-        Injector injector = Guice.createInjector(new ServerModule());
-        injector.getInstance(Server.class).start();
-    }
-
-    private static void printBanner() {
-        new FileBanner().printBanner();
+    public String hash(String password) {
+        return password;
     }
 }

@@ -16,15 +16,18 @@
 
 package me.adiras.ftprx.core;
 
+import com.google.inject.Inject;
 import me.adiras.ftprx.*;
-import me.adiras.ftprx.command.RequestDispatcher;
+import me.adiras.ftprx.account.AccountRepository;
+import me.adiras.ftprx.RequestDispatcher;
 import me.adiras.ftprx.core.threading.ServerListenerRunnable;
 import me.adiras.ftprx.core.threading.WorkerThread;
 import me.adiras.ftprx.core.threading.WorkerThreadManager;
+import me.adiras.ftprx.security.Authenticator;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static org.tinylog.Logger.*;
 
@@ -33,23 +36,28 @@ import static org.tinylog.Logger.*;
  * starts a new Thread and goes back to listening for further clients.
  */
 public class Server implements ServerContext, NetworkListener {
-    private static final int MAXIMUM_WORKER_THREAD_POOL_SIZE = 2;
-    private static final int PORT = 21;
 
-    private WorkerThreadManager workerThreadPool = new WorkerThreadManager(MAXIMUM_WORKER_THREAD_POOL_SIZE);
+    @Inject
+    private ServerConfig config;
+
+    @Inject
+    private Authenticator authenticator;
+
+    @Inject
+    private AccountRepository accountRepository;
+
+    private WorkerThreadManager workerThreadPool = new WorkerThreadManager(12);
     private RequestDispatcher requestDispatcher = new RequestDispatcher(this);
     private ServerSocket serverSocket;
     private Thread listenerThread;
-
-    private AccountService accountService = new AccountService();
 
     public void start() {
         info("Starting server...");
 
         try {
             // Creates a server socket, bound to the specified port.
-            serverSocket = new ServerSocket(PORT);
-            info("Server running at port {}", PORT);
+            serverSocket = new ServerSocket(config.port());
+            info("Server running at port {}", config.port());
 
             launchListenerThread();
 
@@ -67,14 +75,15 @@ public class Server implements ServerContext, NetworkListener {
      * The method is called if the new client connects to the sockets
      * @param socket client socket to be handled
      */
-    public void connectionRequest(Socket socket) {
+    @Override
+    public void onConnectionRequest(Socket socket) {
         trace("Connection request: {}", socket.getInetAddress().getHostAddress());
-        workerThreadPool.launchThread(new WorkerThread(socket, this));
+        workerThreadPool.launchThread(new WorkerThread(socket, this, config));
     }
 
     @Override
     public void onDataReceive(Connection connection, byte[] data) {
-        String request = new String(data, Charset.forName("UTF-8"));
+        String request = new String(data, StandardCharsets.UTF_8);
         requestDispatcher.handleRequest(connection, request);
     }
 
@@ -82,12 +91,17 @@ public class Server implements ServerContext, NetworkListener {
     public void onConnectionEstablishment(Connection connection) {
         connection.sendResponse(Response.builder()
                 .code("220")
-                .argument("Service ready for new user.")
+                .argument(config.welcomeMessage())
                 .build());
     }
 
     @Override
-    public AccountService getAccountService() {
-        return accountService;
+    public AccountRepository getAccountRepository() {
+        return accountRepository;
+    }
+
+    @Override
+    public Authenticator getAuthenticator() {
+        return authenticator;
     }
 }

@@ -16,22 +16,24 @@
 
 package me.adiras.ftprx;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import me.adiras.ftprx.core.Server;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import me.adiras.ftprx.account.AccountRepository;
+import me.adiras.ftprx.account.JsonAccountRepository;
+import org.aeonbits.owner.ConfigFactory;
 
-public class Application {
-    public static void main(String[] args) {
-        printBanner();
-        launchServer();
+public class ServerModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+        bind(AccountRepository.class).to(JsonAccountRepository.class);
+        bind(ServerConfig.class).toInstance(ConfigFactory.create(ServerConfig.class));
     }
 
-    private static void launchServer() {
-        Injector injector = Guice.createInjector(new ServerModule());
-        injector.getInstance(Server.class).start();
-    }
-
-    private static void printBanner() {
-        new FileBanner().printBanner();
+    @Provides
+    Gson provideGson() {
+        return new GsonBuilder().create();
     }
 }
