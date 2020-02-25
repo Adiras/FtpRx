@@ -1,63 +1,12 @@
 plugins {
-    // Apply the application plugin to add support for building an application
-    id 'application'
-
-    // Apply the java plugin to add support for Java
     id 'java'
 }
 
-group 'me.adiras'
-version '0.1.0'
+group 'com.ftprx'
+version '1.0.0'
 
-// Java version compatibility to use when compiling Java source
 sourceCompatibility = 1.8
 
-// Java version to generate classes for
-targetCompatibility = 1.8
-
-// Define the main class for the application
-mainClassName = 'me.adiras.ftprx.Application'
-
-// In this section you declare where to find the dependencies of your project
 repositories {
-    // You can declare any Maven/Ivy/file repository here.
     mavenCentral()
-}
-
-dependencies {
-    // Use JUnit test framework
-    testCompile("org.junit.jupiter:junit-jupiter-api:5.4.2")
-    testCompile("org.junit.jupiter:junit-jupiter-params:5.4.2")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.4.2")
-
-    testCompile("name.falgout.jeffrey.testing.junit5:guice-extension:1.1.1")
-
-    compile("org.tinylog:tinylog-api:2.0.0-M4.2")
-    compile("org.tinylog:tinylog-impl:2.0.0-M4.2")
-
-    compile("com.google.inject:guice:4.2.2")
-
-    compile("org.aeonbits.owner:owner:1.0.10")
-
-    implementation("com.google.code.gson:gson:2.8.5")
-}
-
-test {
-    useJUnitPlatform()
-}
-
-jar {
-    manifest {
-        attributes("Main-Class": mainClassName)
-    }
-}
-
-startScripts {
-    classpath += files('src/dist/config/server.properties')
-    doLast {
-        def windowsScriptFile   = file getWindowsScript()
-        def unixScriptFile      = file getUnixScript()
-        windowsScriptFile.text  = windowsScriptFile.text.replace('%APP_HOME%\\lib\\server.properties', '%APP_HOME%\\config')
-        unixScriptFile.text     = unixScriptFile.text.replace('$APP_HOME/lib/server.properties', '$APP_HOME/config')
-    }
 }
