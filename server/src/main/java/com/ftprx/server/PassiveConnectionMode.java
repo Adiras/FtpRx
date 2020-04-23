@@ -2,7 +2,7 @@ package com.ftprx.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class PassiveConnectionMode implements ConnectionMode {
     private final int port;
@@ -12,23 +12,16 @@ public class PassiveConnectionMode implements ConnectionMode {
     }
 
     @Override
-    public Socket getDataConnection() {
-        ServerSocket listenerSocket = null;
-        try {
-            listenerSocket = new ServerSocket(port);
-            listenerSocket.setSoTimeout(15000);
-            return listenerSocket.accept();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (listenerSocket != null) {
-                    listenerSocket.close();
-                }
+    public void openConnection(DataConnectionHandler handler) {
+        Thread connectionThread = new Thread(() -> {
+            try (ServerSocket socket = new ServerSocket(port)) {
+                handler.acceptDataConnection(socket.accept());
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        return null;
+        });
+        connectionThread.start();
     }
 }

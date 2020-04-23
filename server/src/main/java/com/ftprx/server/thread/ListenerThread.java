@@ -1,8 +1,10 @@
 package com.ftprx.server.thread;
 
 import com.ftprx.server.util.SocketHelper;
+import jdk.internal.jline.internal.Nullable;
 import org.tinylog.Logger;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,7 +28,7 @@ public class ListenerThread extends Thread {
     public void run() {
         Logger.info("Listening for connections on por " + server.getLocalPort());
         while (!Thread.currentThread().isInterrupted()) {
-            if (SocketHelper.isOpen(server)) {
+            if (SocketHelper.isServerSocketOpen(server)) {
                 try {
                     Socket client = server.accept();
                     notifyObservers(client);
@@ -39,15 +41,15 @@ public class ListenerThread extends Thread {
         }
     }
 
-    public void registerClientConnectObserver(ClientConnectObserver observer) {
+    public void registerClientConnectObserver(@Nullable ClientConnectObserver observer) {
         Optional.ofNullable(observer).ifPresent(observers::add);
     }
 
-    public void unregisterClientConnectObserver(ClientConnectObserver observer) {
+    public void unregisterClientConnectObserver(@Nullable ClientConnectObserver observer) {
         Optional.ofNullable(observer).ifPresent(observers::remove);
     }
 
-    private void notifyObservers(Socket client) {
+    private void notifyObservers(@Nonnull Socket client) {
         observers.forEach(observer -> observer.onClientConnected(client));
     }
 }

@@ -1,5 +1,6 @@
 package com.ftprx.server.command;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
@@ -25,14 +26,14 @@ import com.ftprx.server.channel.Command;
  * argument is changed, Format then returns to the Non-print default.
  */
 public class RepresentationTypeCommand extends AbstractCommand {
+
     @Override
     public void onCommand(Command command, Client client) {
-//        final String typeCode = command.getArguments().get(0);
         client.sendReply(200, "Command okay.");
     }
 
     @Override
-    public String[] dependency() {
-        return ANY_COMMAND;
+    public CommandCode[] dependency() {
+        return ANY;
     }
 }

@@ -7,13 +7,14 @@ import com.ftprx.server.process.DataTransferListingProcess;
 
 import java.util.concurrent.Executors;
 
-public class NameListCommand extends AbstractCommand {
+public class ListCommand extends AbstractCommand {
 
     @Override
     public void onCommand(Command command, Client client) {
         client.sendReply(150, "Here comes the directory listing.");
+        final String pathname = null;
         Executors.newCachedThreadPool()
-                .execute(new DataTransferListingProcess(client, "ad"));
+                .execute(new DataTransferListingProcess(client, pathname));
     }
 
     @Override

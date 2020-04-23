@@ -2,6 +2,7 @@ package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -16,11 +17,11 @@ import java.net.Socket;
 public abstract class DataTransferProcess implements Runnable {
     protected final Client client;
 
-    public DataTransferProcess(Client client) {
+    public DataTransferProcess(@Nonnull Client client) {
         this.client = client;
     }
 
-    public abstract void submit();
+    public abstract void perform();
 
     @Override
     public void run() {
@@ -36,7 +37,7 @@ public abstract class DataTransferProcess implements Runnable {
                 client.sendReply(551, "Requested action aborted: DTP output stream is closed.");
                 return;
             }
-            submit();
+            perform();
             try {
                 client.closeDataConnection();
             } catch (IOException e) {

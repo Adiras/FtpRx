@@ -1,42 +1,59 @@
 package com.ftprx.server.command;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+/*
+ * The argument is a HOST-PORT specification for the data port
+ * to be used in data connection. There are defaults for both
+ * the user and server data ports, and under normal
+ * circumstances this command and its reply are not needed.
+ * If this command is used, the argument is the concatenation of a
+ * 32-bit internet host address and a 16-bit TCP port address.
+ * This address information is broken into 8-bit fields and the
+ * value of each field is transmitted as a decimal number (in
+ * character string representation).
+ * The fields are separated by commas. A port command would be:
+ *      PORT h1,h2,h3,h4,p1,p2
+ * where h1 is the high order 8 bits of the internet host address.
+ */
 public class DataPortCommand extends AbstractCommand {
+
     @Override
     public void onCommand(Command command, Client client) {
-        String hostname = "127.0.0.1";
+        final String hostPort = command.getFirstArgument(); // "192,168,1,105,223,91"
+        final String[] fields = hostPort.split(","); // ["192","168","1","105","223","91"]
+        client.openActiveDataConnection(payloadHostname(fields), payloadPort(fields));
+        client.sendReply(200, "PORT command successful.");
+    }
 
-        String[] args = command.getArguments().get(0).split(",");
-        int p1 = Integer.parseInt(args[4]);
-        int p2 = Integer.parseInt(args[5]);
+    private String payloadHostname(String[] fields) {
+        return String.format("%s.%s.%s.%s", fields[0], fields[1], fields[2], fields[3]);
+    }
 
+    private int payloadPort(String[] fields) {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4);
         // by choosing big endian, high order bytes must be put
         // to the buffer before low order bytes
         byteBuffer.order(ByteOrder.BIG_ENDIAN);
         // since ints are 4 bytes (32 bit), you need to put all 4,
         // so put 0 for the high order bytes
+        int p1 = Integer.parseInt(fields[4]);
+        int p2 = Integer.parseInt(fields[5]);
         byteBuffer.put((byte) 0x00);
         byteBuffer.put((byte) 0x00);
         byteBuffer.put((byte) p1);
         byteBuffer.put((byte) p2);
         byteBuffer.flip();
-        int port = byteBuffer.getInt();
-
-        client.openActiveDataConnection(hostname, port);
-        if (client.isDataConnectionOpen()) {
-            client.sendReply(200, "PORT command successful.");
-        }
+        return byteBuffer.getInt();
     }
 
     @Override
-    public String[] dependency() {
-        return ANY_COMMAND;
+    public CommandCode[] dependency() {
+        return ANY;
     }
 }

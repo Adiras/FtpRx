@@ -1,16 +1,25 @@
 package com.ftprx.server.command;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
+/*
+ * This command is used to find out the type of operating
+ * system at the server. The reply shall have as its first
+ * word one of the system names listed in the current version
+ * of the Assigned Numbers document
+ */
 public class SystemCommand extends AbstractCommand {
+
     @Override
     public void onCommand(Command command, Client client) {
-        client.sendReply(215, "System information. TODO: implement");
+        //TODO Implement code
+        client.sendReply(215, "UNIX Type: L8");
     }
 
     @Override
-    public String[] dependency() {
-        return ANY_COMMAND;
+    public CommandCode[] dependency() {
+        return ANY;
     }
 }

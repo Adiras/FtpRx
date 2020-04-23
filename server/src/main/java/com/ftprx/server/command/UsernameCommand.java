@@ -1,13 +1,13 @@
 package com.ftprx.server.command;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.Server;
 import com.ftprx.server.account.Account;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
 
-import javax.annotation.CheckForNull;
-
 public class UsernameCommand extends AbstractCommand {
+
     @Override
     public void onCommand(Command command, Client client) {
         Server facade = Server.getInstance();
@@ -20,9 +20,8 @@ public class UsernameCommand extends AbstractCommand {
         }
     }
 
-    @CheckForNull
     @Override
-    public String[] dependency() {
-        return ANY_COMMAND;
+    public CommandCode[] dependency() {
+        return ANY;
     }
 }

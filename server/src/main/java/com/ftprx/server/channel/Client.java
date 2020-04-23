@@ -16,12 +16,12 @@
 
 package com.ftprx.server.channel;
 
-import com.ftprx.server.ActiveConnectionMode;
 import com.ftprx.server.ConnectionMode;
-import com.ftprx.server.PassiveConnectionMode;
 import com.ftprx.server.account.Account;
+import com.ftprx.server.util.SocketHelper;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -89,22 +89,18 @@ public class Client {
         return account;
     }
 
-    public void receiveCommand(Command command) {
-        Objects.requireNonNull(command, "Command cannot be null");
-        commandBuffer.add(command);
-        lastCommand = command;
+    public void receiveCommand(@Nullable Command command) {
+        if (command != null) {
+            commandBuffer.add(command);
+            lastCommand = command;
+        }
     }
 
     public void sendReply(Integer code, String text) {
-        sendReply(Reply.ReplyBuilder
-                .aReply()
-                .withCode(code.toString())
-                .withText(text)
-                .build());
+        sendReply(new Reply(code.toString(), text));
     }
 
     public void sendReply(Reply reply) {
-        Objects.requireNonNull(reply, "Reply cannot be null");
         replyBuffer.add(reply);
     }
 
@@ -120,9 +116,13 @@ public class Client {
         return dataConnection;
     }
 
-//    public boolean openDataConnection(ConnectionMode mode) {
-//        return ((this.dataConnection = mode.getDataConnection()) != null);
-//    }
+    public void openDataConnection(ConnectionMode mode) {
+        mode.openConnection(this::acceptDataConnection);
+    }
+
+    public void acceptDataConnection(Socket socket) {
+        this.dataConnection = socket;
+    }
 
     public void openActiveDataConnection(String host, int port) {
         try {
@@ -131,31 +131,6 @@ public class Client {
             e.printStackTrace();
         }
     }
-
-//    public void openPassiveDataConnection(int port) {
-//        ServerSocket listenerSocket = null;
-//        try {
-//            listenerSocket = new ServerSocket();
-//            listenerSocket.bind(new InetSocketAddress(InetAddress.getByName("localhost"), port));
-//            final ServerSocket finalListenerSocket = listenerSocket;
-//            Executors.newCachedThreadPool().execute(() -> {
-//                try {
-//                    this.dataConnection = finalListenerSocket.accept();
-//                    System.out.println("KURWA DZIALAAAAA");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    try {
-//                        finalListenerSocket.close();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public void closeDataConnection() throws IOException {
         dataConnection.close();
@@ -182,10 +157,10 @@ public class Client {
     }
 
     public boolean isControlConnectionOpen() {
-        return controlConnection != null && !controlConnection.isClosed() && controlConnection.isConnected();
+        return SocketHelper.isSocketOpen(controlConnection);
     }
 
     public boolean isDataConnectionOpen() {
-        return dataConnection != null && !dataConnection.isClosed() && dataConnection.isConnected();
+        return SocketHelper.isSocketOpen(dataConnection);
     }
 }

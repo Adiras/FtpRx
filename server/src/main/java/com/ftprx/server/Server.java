@@ -80,8 +80,8 @@ public class Server {
      * Start the server.
      * Initialize main socket and thread listening for incoming connections.
      */
-    public void start() {
-        if (!SocketHelper.isOpen(server)) {
+    public synchronized void start() {
+        if (!SocketHelper.isServerSocketOpen(server)) {
             try {
                 server = new ServerSocket();
                 server.setSoTimeout(SO_TIMEOUT);
@@ -101,7 +101,7 @@ public class Server {
      * Stop the server.
      * New clients will not be accepted and stops existing connections.
      */
-    public void stop() {
+    public synchronized void stop() {
         try {
             if (server != null) {
                 server.close();
@@ -123,7 +123,7 @@ public class Server {
      * When a server is paused, it will not accept any new clients,
      * but current connected clients will be kept.
      */
-    public void pause() {
+    public synchronized void pause() {
         try {
             if (server != null) {
                 server.close();
@@ -157,16 +157,12 @@ public class Server {
         return clients;
     }
 
-    private void acceptClient(Socket connection) {
-        Logger.debug("New client accepted");
-        Client client = new Client(connection);
+    private void acceptClient(Socket socket) {
+        Client client = new Client(socket);
         registerNewClient(client);
         threadManager.launchWorkerThread(client);
-        client.sendReply(Reply.ReplyBuilder
-                .aReply()
-                .withCode("220")
-                .withText("Server welcome")
-                .build());
+        client.sendReply(220, "Server welcome");
+        Logger.debug("New client accepted");
     }
 
     private void disconnectAllClients() {

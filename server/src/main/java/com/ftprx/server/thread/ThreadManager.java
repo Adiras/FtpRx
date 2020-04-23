@@ -1,7 +1,6 @@
 package com.ftprx.server.thread;
 
 import com.ftprx.server.channel.Client;
-import com.ftprx.server.process.DataTransferProcess;
 import com.ftprx.server.process.WorkerThread;
 
 import java.util.concurrent.ExecutorService;
@@ -18,9 +17,4 @@ public class ThreadManager {
         threadPool.execute(new WorkerThread(client));
         return true;
     }
-
-//    public boolean launchDataTransferProcess(Client client) {
-//        threadPool.execute(new DataTransferProcess(client));
-//        return true;
-//    }
 }

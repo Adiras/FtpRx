@@ -1,12 +1,11 @@
 package com.ftprx.server.command;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
 
-import javax.annotation.CheckForNull;
-
 public abstract class AbstractCommand {
-    protected static final String[] ANY_COMMAND = null;
+    protected static final CommandCode[] ANY = null;
 
     public void onRegister() {
         // Empty method
@@ -14,10 +13,9 @@ public abstract class AbstractCommand {
 
     public abstract void onCommand(Command command, Client client);
 
-    @CheckForNull
-    public abstract String[] dependency();
+    public abstract CommandCode[] dependency();
 
-    public boolean hasAnyDependency() {
-        return dependency() != ANY_COMMAND;
+    public boolean isRequireDependency() {
+        return dependency() != ANY;
     }
 }

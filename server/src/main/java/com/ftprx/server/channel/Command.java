@@ -1,5 +1,11 @@
 package com.ftprx.server.channel;
 
+import com.ftprx.server.CommandCode;
+import com.ftprx.server.util.ControlCharacters;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +13,7 @@ import java.util.Optional;
 
 /**
  * The commands are Telnet character strings transmitted over the control connections.
- * Example: 'USER <SP> admin <CRLF>' -> Command{code="USER", arguments="[admin]"}
+ * Example: 'USER <SP> admin <CRLF>' -> Command{code=CommandCode.USER, arguments="[admin]"}
  */
 public class Command {
     /**
@@ -22,7 +28,7 @@ public class Command {
      */
     private final List<String> arguments;
 
-    private Command(String code, List<String> arguments) {
+    public Command(String code, List<String> arguments) {
         this.code = code;
         this.arguments = arguments;
     }
@@ -35,12 +41,36 @@ public class Command {
         return arguments;
     }
 
-    @Override
-    public String toString() {
-        return "Command{" +
-                "code='" + code + '\'' +
-                ", arguments='" + arguments + '\'' +
-                '}';
+    public String getFirstArgument() {
+        return getArgument(0);
+    }
+
+    public String getArgument(int index) {
+        return arguments.get(index);
+    }
+
+    public boolean equalsCode(CommandCode c) {
+        return code.equals(c.name());
+    }
+
+    public static Command valueOf(String str) {
+        CommandBuilder command = CommandBuilder.aCommand();
+        int codeMaxLength = 4;
+        int endIndex = Math.min(str.length(), codeMaxLength);
+        final String code = str.substring(0, endIndex).trim();
+        command.withCode(code.toUpperCase());
+
+        if (!str.contains(ControlCharacters.SP)) {
+            return command.build();
+        }
+
+        final String args = str.substring(code.length() + 1);
+        for (String arg : args.split(ControlCharacters.SP)) {
+            if (!arg.equals(ControlCharacters.SP)) {
+                command.withArgument(arg);
+            }
+        }
+        return command.build();
     }
 
     public static final class CommandBuilder {

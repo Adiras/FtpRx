@@ -1,5 +1,6 @@
 package com.ftprx.server.command;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
@@ -14,6 +15,7 @@ import java.nio.file.Paths;
  * the pathname is relative).
  */
 public class MakeDirectoryCommand extends AbstractCommand {
+
     @Override
     public void onCommand(Command command, Client client) {
         final String pathname = command.getArguments().get(0);
@@ -30,7 +32,7 @@ public class MakeDirectoryCommand extends AbstractCommand {
     }
 
     @Override
-    public String[] dependency() {
-        return ANY_COMMAND;
+    public CommandCode[] dependency() {
+        return ANY;
     }
 }

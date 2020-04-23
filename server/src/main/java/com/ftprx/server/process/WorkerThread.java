@@ -1,10 +1,12 @@
 package com.ftprx.server.process;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.Server;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Reply;
 import com.ftprx.server.command.CommandDispatcher;
+import com.ftprx.server.util.ControlCharacters;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,7 +29,6 @@ public class WorkerThread implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("worker thread created '" + client.getControlConnection().getInetAddress().getHostAddress() + "'");
         try {
             writer = createWriter(client.getOutputStream());
             reader = createReader(client.getInputStream());
@@ -37,27 +38,15 @@ public class WorkerThread implements Runnable {
 
                 Reply reply;
                 while ((reply = replyBuffer.poll()) != null) {
-                    writer.write(reply.getCode() + " " + reply.getText() + "\r\n");
-                    System.out.println("SERVER ---> '" + reply.getCode() + " " + reply.getText() + "'");
+                    writer.write(reply.toString());
+                    System.out.println("SERVER ---> '" + reply.getCode() + " " + reply.getText() + "'"); //debug
                 }
                 writer.flush();
 
                 String line;
                 while (reader.ready() && (line = reader.readLine()) != null) {
                     System.out.println("SERVER <--- '" + line + "'");
-
-                    String SP = " ";
-                    Command.CommandBuilder command = Command.CommandBuilder.aCommand();
-                    if (line.contains(SP)) {
-                        String[] tokens = line.split(SP);
-                        command.withCode(tokens[0]);
-                        for (int i = 1; i < tokens.length; i++) {
-                            command.withArgument(tokens[i].trim());
-                        }
-                    } else {
-                        command.withCode(line);
-                    }
-                    client.receiveCommand(command.build());
+                    client.receiveCommand(Command.valueOf(line));
                 }
 
                 Command command;
@@ -69,7 +58,7 @@ public class WorkerThread implements Runnable {
             e.printStackTrace();
             /* Do nothing */
         } finally {
-            System.out.println("closing control connection!");
+            System.out.println("closing control connection!"); //debug
             try {
                 client.closeControlConnection();
             } catch (IOException e) {

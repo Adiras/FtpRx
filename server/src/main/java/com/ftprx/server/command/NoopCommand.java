@@ -4,17 +4,16 @@ import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
-import java.io.IOException;
-
-public class LogoutCommand extends AbstractCommand {
+/*
+ * This command does not affect any parameters or previously
+ * entered commands. It specifies no action other than that
+ * the server send an OK reply.
+ */
+public class NoopCommand extends AbstractCommand {
 
     @Override
     public void onCommand(Command command, Client client) {
-        try {
-            client.closeControlConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        client.sendReply(200, "OK.");
     }
 
     @Override

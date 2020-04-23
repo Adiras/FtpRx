@@ -1,5 +1,11 @@
 package com.ftprx.server.channel;
 
+import com.ftprx.server.util.ControlCharacters;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
+
 /**
  * A reply is an acknowledgment (positive or negative) sent from
  * server to client via the control connection in response to commands.
@@ -16,7 +22,7 @@ public class Reply {
      */
     private final String text;
 
-    private Reply(String code, String text) {
+    public Reply(@Nonnull String code, @Nullable String text) {
         this.code = code;
         this.text = text;
     }
@@ -31,35 +37,32 @@ public class Reply {
 
     @Override
     public String toString() {
-        return "Reply{" +
-                "code='" + code + '\'' +
-                ", text='" + text + '\'' +
-                '}';
+        return code + ControlCharacters.SP + text + ControlCharacters.CRLF;
     }
 
-    public static final class ReplyBuilder {
-        private String code;
-        private String text;
-
-        private ReplyBuilder() {
-        }
-
-        public static ReplyBuilder aReply() {
-            return new ReplyBuilder();
-        }
-
-        public ReplyBuilder withCode(String code) {
-            this.code = code;
-            return this;
-        }
-
-        public ReplyBuilder withText(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public Reply build() {
-            return new Reply(code, text);
-        }
-    }
+    //    public static final class ReplyBuilder {
+//        private String code;
+//        private String text;
+//
+//        private ReplyBuilder() {
+//        }
+//
+//        public static ReplyBuilder aReply() {
+//            return new ReplyBuilder();
+//        }
+//
+//        public ReplyBuilder withCode(String code) {
+//            this.code = code;
+//            return this;
+//        }
+//
+//        public ReplyBuilder withText(String text) {
+//            this.text = text;
+//            return this;
+//        }
+//
+//        public Reply build() {
+//            return new Reply(code, text);
+//        }
+//    }
 }
