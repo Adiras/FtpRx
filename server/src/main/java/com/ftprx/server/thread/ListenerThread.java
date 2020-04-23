@@ -1,6 +1,6 @@
 package com.ftprx.server.thread;
 
-import com.ftprx.server.util.ServerHelper;
+import com.ftprx.server.util.SocketHelper;
 import org.tinylog.Logger;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class ListenerThread extends Thread {
     public void run() {
         Logger.info("Listening for connections on por " + server.getLocalPort());
         while (!Thread.currentThread().isInterrupted()) {
-            if (ServerHelper.isOpen(server)) {
+            if (SocketHelper.isOpen(server)) {
                 try {
                     Socket client = server.accept();
                     notifyObservers(client);

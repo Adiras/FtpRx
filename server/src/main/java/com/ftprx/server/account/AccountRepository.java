@@ -1,7 +1,9 @@
 package com.ftprx.server.account;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public interface AccountRepository {
-    Optional<Account> findAccountByUsername(String username);
+    @Nullable
+    Account findAccountByUsername(String username);
 }

@@ -1,20 +1,9 @@
-/*
- * Copyright 2019, FtpRx Contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.ftprx.server.process;
+
+import com.ftprx.server.channel.Client;
+
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * The data transfer process, in its normal "active" state,
@@ -24,5 +13,35 @@ package com.ftprx.server.process;
  * The DTP can be placed in a "passive" state to listen for,
  * rather than initiate a connection on the data port.
  */
-public class DataTransferProcess {
+public abstract class DataTransferProcess implements Runnable {
+    protected final Client client;
+
+    public DataTransferProcess(Client client) {
+        this.client = client;
+    }
+
+    public abstract void submit();
+
+    @Override
+    public void run() {
+        if (!client.isDataConnectionOpen()) {
+            client.sendReply(425, "Use PORT or PASV first.");
+        } else {
+            final Socket connection = client.getControlConnection();
+            if (connection.isInputShutdown()) {
+                client.sendReply(551, "Requested action aborted: DTP input stream is closed.");
+                return;
+            }
+            if (connection.isOutputShutdown()) {
+                client.sendReply(551, "Requested action aborted: DTP output stream is closed.");
+                return;
+            }
+            submit();
+            try {
+                client.closeDataConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -1,38 +1,39 @@
-package com.ftprx.server.thread;
+package com.ftprx.server.process;
 
+import com.ftprx.server.Server;
 import com.ftprx.server.channel.Command;
-import com.ftprx.server.channel.ControlConnection;
+import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Reply;
 import com.ftprx.server.command.CommandDispatcher;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WorkerThread implements Runnable {
-    /**
-     * Connection to which the thread is assigned.
-     */
-    private final ControlConnection connection;
+    private final Client client;
+    private final Socket connection;
     private final CommandDispatcher dispatcher;
 
     private BufferedWriter writer;
     private BufferedReader reader;
 
-    public WorkerThread(ControlConnection connection, CommandDispatcher dispatcher) {
-        this.connection = Objects.requireNonNull(connection, "Client cannot be null");
-        this.dispatcher = Objects.requireNonNull(dispatcher, "Dispatcher cannot be null");
+    public WorkerThread(Client client) {
+        this.client = Objects.requireNonNull(client, "Client cannot be null");
+        this.connection = client.getControlConnection();
+        this.dispatcher = Objects.requireNonNull(Server.getInstance().getDispatcher(), "Dispatcher cannot be null");
     }
 
     @Override
     public void run() {
-        System.out.println("WORKER THREAD CREATED '" + connection.getClient().getInetAddress().getHostAddress() + "'");
+        System.out.println("worker thread created '" + client.getControlConnection().getInetAddress().getHostAddress() + "'");
         try {
-            writer = createWriter(connection.getOutputStream());
-            reader = createReader(connection.getInputStream());
-            while (connection.isOpen()) {
-                final ConcurrentLinkedQueue<Reply> replyBuffer = connection.getBufferedReplies();
-                final ConcurrentLinkedQueue<Command> commandBuffer = connection.getBufferedCommands();
+            writer = createWriter(client.getOutputStream());
+            reader = createReader(client.getInputStream());
+            while (client.isControlConnectionOpen()) {
+                final ConcurrentLinkedQueue<Reply> replyBuffer = client.getBufferedReplies();
+                final ConcurrentLinkedQueue<Command> commandBuffer = client.getBufferedCommands();
 
                 Reply reply;
                 while ((reply = replyBuffer.poll()) != null) {
@@ -56,20 +57,21 @@ public class WorkerThread implements Runnable {
                     } else {
                         command.withCode(line);
                     }
-                    connection.receiveCommand(command.build());
+                    client.receiveCommand(command.build());
                 }
 
                 Command command;
                 while ((command = commandBuffer.poll()) != null) {
-                    dispatcher.execute(command, connection);
+                    dispatcher.executeCommand(command, client);
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
             /* Do nothing */
         } finally {
-            System.out.println("ControlConnection.close");
+            System.out.println("closing control connection!");
             try {
-                connection.close();
+                client.closeControlConnection();
             } catch (IOException e) {
                 e.printStackTrace();
             }

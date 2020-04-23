@@ -1,102 +1,65 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.account.Account;
-import com.ftprx.server.account.AccountRepository;
 import com.ftprx.server.channel.Command;
-import com.ftprx.server.channel.ControlConnection;
-import com.ftprx.server.channel.Reply;
+import com.ftprx.server.channel.Client;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.ftprx.server.util.CommandConstants.*;
+import java.util.*;
 
 public class CommandDispatcher {
-    private final AccountRepository accountRepository;
-    private final Map<String, CommandController> controllers;
+    private Map<String, AbstractCommand> commandLookupTable;
 
-    public CommandDispatcher(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-        this.controllers = new HashMap<>();
-
-        bind(OPTS, this::commandNotImplemented);
-        bind(USER, this::user);
-        bind(XPWD, this::pwd);
-        bind(PWD , this::pwd);
-        bind(NOOP, this::noop);
-        bind(PASS, this::pass);
+    public CommandDispatcher() {
+        this.commandLookupTable = new HashMap<>();
     }
 
-    public void execute(Command command, ControlConnection connection) {
-        final String code = command.getCode();
-        if (controllers.containsKey(code.toUpperCase())) {
-            controllers.get(code).handle(command, connection);
-        } else {
-            commandNotImplemented(null, connection);
-        }
+    public void registerCommand(String commandCode, AbstractCommand handler) {
+        commandLookupTable.put(commandCode, handler);
+        handler.onRegister();
     }
 
-    private void bind(String code, CommandController controller) {
-        controllers.put(code, controller);
+    private AbstractCommand getHandlerAssignTo(Command command) {
+        return commandLookupTable.get(command.getCode());
     }
 
-    private void commandNotImplemented(Command command, ControlConnection connection) {
-        connection.sendReply(Reply.ReplyBuilder.aReply()
-                .withCode("502")
-                .withText("Command not implemented")
-                .build());
-    }
-
-    private void user(Command command, ControlConnection connection) {
-        UserCommand user = new UserCommand(command);
-        if (user.getUsername() == null) {
-            connection.sendReply(Reply.ReplyBuilder.aReply()
-                    .withCode("501")
-                    .withText("Syntax error in parameters or arguments")
-                    .build());
+    public void executeCommand(Command command, Client connection) {
+        if (isCommandNotRegistered(command)) {
+            onExecuteUnknownCommand(command, connection);
             return;
         }
 
-        if (connection.isLogged()) {
-            connection.sendReply(530, "You are already logged");
-            return;
+        final AbstractCommand handler = getHandlerAssignTo(command);
+        if (handler.hasAnyDependency()) {
+            final Command clientLastCommand = connection.getLastCommand();
+            if (clientLastCommand == null) {
+                onExecuteWithoutDependCommand(command, connection);
+            } else {
+                boolean atLeastOneDependency = false;
+                for (String dependency : handler.dependency()) {
+                    if (dependency.equals(clientLastCommand.getCode())) {
+                        atLeastOneDependency = true;
+                    }
+                }
+                if (!atLeastOneDependency) {
+                    onExecuteWithoutDependCommand(command, connection);
+                }
+            }
         }
-
-        Optional<Account> account = accountRepository.findAccountByUsername(user.getUsername());
-        if (account.isPresent()) {
-            connection.login(account.get());
-            connection.sendReply(230, "User logged in, proceed");
-        } else {
-            connection.sendReply(530, "Wrong username");
-        }
+        handler.onCommand(command, connection);
     }
 
-    private void pass(Command command, ControlConnection connection) {
-
+    public void onExecuteWithoutDependCommand(Command command, Client connection) {
+        connection.sendReply(503, "Bad sequence of commands");
     }
 
-    /**
-     * This command causes the name of the current
-     * working directory to be returned in the reply.
-     *
-     * Command syntax: PWD <CRLF>
-     */
-    private void pwd(Command command, ControlConnection connection) {
-        connection.getAccount().ifPresent(account -> {
-            String directory = String.format("\"%s\"", connection.getWorkingDirectory().orElse("null"));
-            connection.sendReply(257, directory);
-        });
+    public void onExecuteUnknownCommand(Command command, Client connection) {
+        connection.sendReply(502, "Command not implemented");
     }
 
-    /**
-     * This command does not affect any parameters or previously
-     * entered commands. It specifies no action other than that the
-     * server send an OK reply.
-     *
-     * Command syntax: NOOP <CRLF>
-     */
-    private void noop(Command command, ControlConnection connection) {
-        connection.sendReply(200, "Command okay");
+    public boolean isCommandNotRegistered(Command command) {
+        return !isCommandRegistered(command);
+    }
+
+    public boolean isCommandRegistered(Command command) {
+        return commandLookupTable.containsKey(command.getCode());
     }
 }

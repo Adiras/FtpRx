@@ -1,13 +1,14 @@
 package com.ftprx.server.account;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class InMemoryAccountRepository implements AccountRepository {
     @Override
-    public Optional<Account> findAccountByUsername(String username) {
+    public Account findAccountByUsername(String username) {
         if ("admin".equals(username)) {
-            return Optional.of(new Account("admin", "C:/Users/admin", "admin"));
+            return new Account("admin", "C:/Users/wkacp/Desktop/server", "admin");
         }
-        return Optional.empty();
+        return null;
     }
 }
