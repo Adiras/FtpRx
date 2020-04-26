@@ -12,14 +12,17 @@ import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Objects.requireNonNull;
+
 public class ListenerThread extends Thread {
+    private static final String ERROR_SERVER_NULL = "Argument 'server' must not be null";
     private static final String THREAD_NAME = "Protocol Interpreter Listening Thread";
 
     private final Set<ClientConnectObserver> observers;
     private final ServerSocket server;
 
-    public ListenerThread(ServerSocket server) {
-        this.server = Objects.requireNonNull(server, "Server cannot be null");
+    public ListenerThread(@Nonnull ServerSocket server) {
+        this.server = requireNonNull(server, ERROR_SERVER_NULL);
         this.observers = Collections.newSetFromMap(new ConcurrentHashMap<>());
         setName(THREAD_NAME);
     }

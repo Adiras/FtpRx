@@ -11,6 +11,7 @@ public class LogoutCommand extends AbstractCommand {
     @Override
     public void onCommand(Command command, Client client) {
         try {
+            client.sendReply(221, "Goodbye.");
             client.closeControlConnection();
         } catch (IOException e) {
             e.printStackTrace();

@@ -21,6 +21,7 @@ import com.ftprx.server.account.Account;
 import com.ftprx.server.util.SocketHelper;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,8 @@ import java.io.OutputStream;
 import java.net.*;
 import java.util.Objects;
 import java.util.concurrent.*;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * The communication path between the user protocol interpreter and
@@ -51,23 +54,24 @@ public class Client {
     private String workingDirectory;
     private Command lastCommand;
 
-    public Client(Socket controlConnection) {
-        this.controlConnection = Objects.requireNonNull(controlConnection, "Client cannot be null");
+    public Client(@Nonnull Socket controlConnection) {
+        this.controlConnection = requireNonNull(controlConnection);
         commandBuffer = new ConcurrentLinkedQueue<>();
         replyBuffer = new ConcurrentLinkedQueue<>();
     }
 
-    public void login(Account account) {
-        this.account = account;
+    public void login(@Nonnull Account account) {
+        this.account = requireNonNull(account);
         changeWorkingDirectory(account.getHomeDirectory());
-    }
-
-    public boolean isLoggedIn() {
-        return account != null;
     }
 
     public void logout() {
         this.account = null;
+        changeWorkingDirectory(null);
+    }
+
+    public boolean isLoggedIn() {
+        return account != null;
     }
 
     @CheckForNull
@@ -75,7 +79,7 @@ public class Client {
         return lastCommand;
     }
 
-    public void changeWorkingDirectory(String workingDirectory) {
+    public void changeWorkingDirectory(@Nullable String workingDirectory) {
         this.workingDirectory = workingDirectory;
     }
 
@@ -117,19 +121,7 @@ public class Client {
     }
 
     public void openDataConnection(ConnectionMode mode) {
-        mode.openConnection(this::acceptDataConnection);
-    }
-
-    public void acceptDataConnection(Socket socket) {
-        this.dataConnection = socket;
-    }
-
-    public void openActiveDataConnection(String host, int port) {
-        try {
-            this.dataConnection = new Socket(host, port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mode.openConnection(this::setDataConnection);
     }
 
     public void closeDataConnection() throws IOException {
@@ -144,7 +136,7 @@ public class Client {
         controlConnection.close();
     }
 
-    public void setDataConnection(Socket dataConnection) {
+    private void setDataConnection(Socket dataConnection) {
         this.dataConnection = dataConnection;
     }
 

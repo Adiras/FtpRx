@@ -1,5 +1,6 @@
 package com.ftprx.server.command;
 
+import com.ftprx.server.ActiveConnectionMode;
 import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
@@ -27,7 +28,8 @@ public class DataPortCommand extends AbstractCommand {
     public void onCommand(Command command, Client client) {
         final String hostPort = command.getFirstArgument(); // "192,168,1,105,223,91"
         final String[] fields = hostPort.split(","); // ["192","168","1","105","223","91"]
-        client.openActiveDataConnection(payloadHostname(fields), payloadPort(fields));
+        client.openDataConnection(new ActiveConnectionMode(
+                payloadHostname(fields), payloadPort(fields)));
         client.sendReply(200, "PORT command successful.");
     }
 

@@ -1,10 +1,9 @@
 package com.ftprx.server;
 
-import com.ftprx.server.channel.Client;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.function.Consumer;
 
 public class ActiveConnectionMode implements ConnectionMode {
     private final String host;
@@ -16,10 +15,10 @@ public class ActiveConnectionMode implements ConnectionMode {
     }
 
     @Override
-    public void openConnection(DataConnectionHandler handler) {
+    public void openConnection(Consumer<Socket> callback) {
         Thread connectionThread = new Thread(() -> {
             try (Socket socket = new Socket(host, port)) {
-                handler.acceptDataConnection(socket);
+                callback.accept(socket);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {

@@ -1,37 +1,35 @@
 package com.ftprx.server.process;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.Server;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Reply;
 import com.ftprx.server.command.CommandDispatcher;
-import com.ftprx.server.util.ControlCharacters;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static java.util.Objects.requireNonNull;
 
 public class WorkerThread implements Runnable {
     private final Client client;
     private final Socket connection;
     private final CommandDispatcher dispatcher;
 
-    private BufferedWriter writer;
-    private BufferedReader reader;
-
-    public WorkerThread(Client client) {
-        this.client = Objects.requireNonNull(client, "Client cannot be null");
+    public WorkerThread(@Nonnull Client client) {
+        this.client = requireNonNull(client);
         this.connection = client.getControlConnection();
-        this.dispatcher = Objects.requireNonNull(Server.getInstance().getDispatcher(), "Dispatcher cannot be null");
+        this.dispatcher = requireNonNull(Server.getInstance().getDispatcher());
     }
 
     @Override
     public void run() {
         try {
-            writer = createWriter(client.getOutputStream());
-            reader = createReader(client.getInputStream());
+            final BufferedWriter writer = createWriter(client.getOutputStream());
+            final BufferedReader reader = createReader(client.getInputStream());
+
             while (client.isControlConnectionOpen()) {
                 final ConcurrentLinkedQueue<Reply> replyBuffer = client.getBufferedReplies();
                 final ConcurrentLinkedQueue<Command> commandBuffer = client.getBufferedCommands();

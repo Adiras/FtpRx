@@ -17,8 +17,7 @@
 package com.ftprx.server;
 
 import com.ftprx.server.account.AccountRepository;
-import com.ftprx.server.account.InMemoryAccountRepository;
-import com.ftprx.server.channel.Reply;
+import com.ftprx.server.infrastructure.repository.InMemoryAccountRepository;
 import com.ftprx.server.command.BootstrapCommands;
 import com.ftprx.server.command.CommandDispatcher;
 import com.ftprx.server.channel.Client;
@@ -83,6 +82,7 @@ public class Server {
     public synchronized void start() {
         if (!SocketHelper.isServerSocketOpen(server)) {
             try {
+//                server = ServerSocketFactory.getDefault().createServerSocket(PORT, 1, InetAddress.getByName("localhost"));
                 server = new ServerSocket();
                 server.setSoTimeout(SO_TIMEOUT);
                 server.bind(new InetSocketAddress(HOSTNAME, PORT));

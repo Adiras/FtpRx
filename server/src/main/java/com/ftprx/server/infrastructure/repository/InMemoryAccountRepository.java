@@ -1,4 +1,7 @@
-package com.ftprx.server.account;
+package com.ftprx.server.infrastructure.repository;
+
+import com.ftprx.server.account.Account;
+import com.ftprx.server.account.AccountRepository;
 
 import javax.annotation.Nullable;
 import java.util.Optional;

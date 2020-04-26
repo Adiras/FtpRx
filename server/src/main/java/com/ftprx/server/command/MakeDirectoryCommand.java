@@ -22,12 +22,12 @@ public class MakeDirectoryCommand extends AbstractCommand {
         if (pathname == null || pathname.equals("")) {
             client.sendReply(501, "Syntax error in parameters or arguments.");
         } else {
-            try {
-                Files.createDirectory(Paths.get(pathname));
-                client.sendReply(257, "Directory created " + pathname);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            client.sendReply(257, "Directory created " + pathname);
+//            try {
+//                Files.createDirectory(Paths.get(pathname));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
