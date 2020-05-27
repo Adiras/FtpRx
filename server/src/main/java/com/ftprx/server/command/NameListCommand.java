@@ -15,9 +15,4 @@ public class NameListCommand extends AbstractCommand {
         Executors.newCachedThreadPool()
                 .execute(new DataTransferListingProcess(client, "ad"));
     }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
-    }
 }

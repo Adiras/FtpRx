@@ -31,9 +31,4 @@ public class RepresentationTypeCommand extends AbstractCommand {
     public void onCommand(Command command, Client client) {
         client.sendReply(200, "Command okay.");
     }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
-    }
 }

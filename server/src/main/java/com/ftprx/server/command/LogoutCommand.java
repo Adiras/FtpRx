@@ -17,9 +17,4 @@ public class LogoutCommand extends AbstractCommand {
             e.printStackTrace();
         }
     }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
-    }
 }

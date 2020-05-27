@@ -1,8 +1,8 @@
 package com.ftprx.server.command;
 
 import com.ftprx.server.CommandCode;
-import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.channel.Command;
 
 public class PrintWorkingDirectoryCommand extends AbstractCommand {
 
@@ -11,10 +11,5 @@ public class PrintWorkingDirectoryCommand extends AbstractCommand {
         String dir = client.getWorkingDirectory();
         if (dir != null)
         client.sendReply(257, dir);
-    }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
     }
 }

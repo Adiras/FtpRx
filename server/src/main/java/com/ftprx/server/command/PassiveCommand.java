@@ -2,12 +2,11 @@ package com.ftprx.server.command;
 
 import com.ftprx.server.CommandCode;
 import com.ftprx.server.PassiveConnectionMode;
-import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.channel.Command;
 import com.ftprx.server.util.SocketHelper;
 
 import javax.annotation.CheckForNull;
-import java.nio.ByteBuffer;
 
 public class PassiveCommand extends AbstractCommand {
 
@@ -26,11 +25,5 @@ public class PassiveCommand extends AbstractCommand {
 
         client.sendReply(227, text);
         client.openDataConnection(new PassiveConnectionMode(port));
-    }
-
-    @CheckForNull
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
     }
 }

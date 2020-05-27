@@ -1,8 +1,9 @@
 package com.ftprx.server;
 
+import javax.annotation.Nonnull;
 import java.net.Socket;
 import java.util.function.Consumer;
 
 public interface ConnectionMode {
-    void openConnection(Consumer<Socket> callback); //TODO: zamiast void niech coś zwraca, np wątek
+    void openConnection(@Nonnull Consumer<Socket> callback);
 }

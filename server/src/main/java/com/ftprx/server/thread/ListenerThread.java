@@ -1,28 +1,28 @@
 package com.ftprx.server.thread;
 
 import com.ftprx.server.util.SocketHelper;
-import jdk.internal.jline.internal.Nullable;
 import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
 public class ListenerThread extends Thread {
-    private static final String ERROR_SERVER_NULL = "Argument 'server' must not be null";
     private static final String THREAD_NAME = "Protocol Interpreter Listening Thread";
-
     private final Set<ClientConnectObserver> observers;
     private final ServerSocket server;
 
     public ListenerThread(@Nonnull ServerSocket server) {
-        this.server = requireNonNull(server, ERROR_SERVER_NULL);
+        this.server = requireNonNull(server, "Server should not be null");
         this.observers = Collections.newSetFromMap(new ConcurrentHashMap<>());
         setName(THREAD_NAME);
     }

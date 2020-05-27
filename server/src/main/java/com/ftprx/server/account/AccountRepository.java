@@ -1,9 +1,11 @@
 package com.ftprx.server.account;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
+import java.util.List;
 
 public interface AccountRepository {
-    @Nullable
-    Account findAccountByUsername(String username);
+    void update(Account account);
+    Account findByUsername(String username);
+    List<Account> findAll();
+    void insert(Account account);
+    void delete(String username);
 }

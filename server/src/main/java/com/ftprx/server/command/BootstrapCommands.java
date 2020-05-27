@@ -3,22 +3,22 @@ package com.ftprx.server.command;
 import static com.ftprx.server.CommandCode.*;
 
 public class BootstrapCommands {
-    public BootstrapCommands(CommandDispatcher cd) {
-        cd.registerCommand(USER, new UsernameCommand());
-        cd.registerCommand(PASS, new PasswordCommand());
-        cd.registerCommand(ACCT, new AccountCommand());
-        cd.registerCommand(PWD, new PrintWorkingDirectoryCommand());
-        cd.registerCommand(XPWD, new PrintWorkingDirectoryCommand());
-        cd.registerCommand(PORT, new DataPortCommand());
-        cd.registerCommand(STOR, new StoreCommand());
-        cd.registerCommand(NLST, new NameListCommand());
-        cd.registerCommand(QUIT, new LogoutCommand());
-        cd.registerCommand(PASV, new PassiveCommand());
-        cd.registerCommand(CWD, new ChangeWorkingDirectoryCommand());
-        cd.registerCommand(MKD, new MakeDirectoryCommand());
-        cd.registerCommand(SYST, new SystemCommand());
-        cd.registerCommand(TYPE, new RepresentationTypeCommand());
-        cd.registerCommand(NOOP, new NoopCommand());
-        cd.registerCommand(LIST, new ListCommand());
+    public BootstrapCommands(CommandLookupTable e) {
+        e.registerCommand(USER, new UsernameCommand());
+        e.registerCommand(PASS, new PasswordCommand());
+        e.registerCommand(ACCT, new AccountCommand());
+        e.registerCommand(PWD, new PrintWorkingDirectoryCommand());
+        e.registerCommand(XPWD, new PrintWorkingDirectoryCommand());
+        e.registerCommand(PORT, new DataPortCommand());
+        e.registerCommand(STOR, new StoreCommand());
+        e.registerCommand(NLST, new NameListCommand());
+        e.registerCommand(QUIT, new LogoutCommand());
+        e.registerCommand(PASV, new PassiveCommand());
+        e.registerCommand(CWD, new ChangeWorkingDirectoryCommand());
+        e.registerCommand(MKD, new MakeDirectoryCommand());
+        e.registerCommand(SYST, new SystemCommand());
+        e.registerCommand(TYPE, new RepresentationTypeCommand());
+        e.registerCommand(NOOP, new NoopCommand());
+        e.registerCommand(LIST, new ListCommand());
     }
 }

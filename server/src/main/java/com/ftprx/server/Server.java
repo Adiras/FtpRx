@@ -17,23 +17,23 @@
 package com.ftprx.server;
 
 import com.ftprx.server.account.AccountRepository;
-import com.ftprx.server.infrastructure.repository.InMemoryAccountRepository;
-import com.ftprx.server.command.BootstrapCommands;
-import com.ftprx.server.command.CommandDispatcher;
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.repository.FileAccountRepository;
 import com.ftprx.server.thread.ListenerThread;
 import com.ftprx.server.thread.ThreadManager;
 import com.ftprx.server.util.SocketHelper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.google.inject.internal.cglib.core.$MethodWrapper;
 import org.tinylog.Logger;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.time.Instant;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
 
 /**
  * The server protocol interpreter listens on specified port
@@ -42,37 +42,26 @@ import java.util.concurrent.*;
  * and manages the server data transfer process.
  */
 public class Server {
-    private static final int PORT = 21;
-    private static final int SO_TIMEOUT = 3000;
-    private static final String HOSTNAME = "127.0.0.1";
+
+    private static final String HOSTNAME   = "127.0.0.1";
+    private static final int    PORT       = 21;
+    private static final int    SO_TIMEOUT = 3000;
+
     private static Server instance = null;
-    private final ObservableList<Client> clients;
+
+    private static List<Client> clients;
     private Instant startTimestamp;
     private ServerSocket server;
     private ListenerThread listenerThread;
     private ServerStatus status;
-    private CommandDispatcher dispatcher;
     private AccountRepository accountRepository;
     private ThreadManager threadManager;
 
     public Server() {
-        this.clients = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
+        this.clients = new CopyOnWriteArrayList<>();
         this.status = ServerStatus.STOPPED;
-        this.dispatcher = new CommandDispatcher();
-        this.accountRepository = new InMemoryAccountRepository();
+        this.accountRepository = new FileAccountRepository("C:\\Users\\wkacp\\Desktop\\ftprx\\server\\src\\main\\resources\\accounts.json");
         this.threadManager = new ThreadManager();
-        new BootstrapCommands(dispatcher);
-
-        Executors.newSingleThreadScheduledExecutor()
-            .scheduleWithFixedDelay(() -> {
-                Iterator<Client> iterator = clients.iterator();
-                while (iterator.hasNext()) {
-                    Client connection = iterator.next();
-                    if (!connection.isControlConnectionOpen()) {
-                        iterator.remove();
-                    }
-                }
-            }, 2L, 2L, TimeUnit.SECONDS);
     }
 
     /**
@@ -90,6 +79,8 @@ public class Server {
                 listenerThread.registerClientConnectObserver(this::acceptClient);
                 listenerThread.start();
                 status = ServerStatus.RUNNING;
+            } catch (BindException e) {
+                Logger.warn(e.getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -142,25 +133,31 @@ public class Server {
     }
 
     public Optional<String> getAddress() {
-        return Optional.ofNullable(server.getInetAddress().getHostAddress());
+        if (server == null) {
+            return Optional.empty();
+        }
+        return Optional.of(server.getInetAddress().getHostAddress());
     }
 
     public Optional<Integer> getPort() {
-        return Optional.ofNullable(server.getLocalPort());
+        if (server == null) {
+            return Optional.empty();
+        }
+        return Optional.of(server.getLocalPort());
     }
 
     public Optional<ServerSocket> getServer() {
         return Optional.ofNullable(server);
     }
 
-    public ObservableList<Client> getClients() {
+    public List<Client> getClients() {
         return clients;
     }
 
     private void acceptClient(Socket socket) {
-        Client client = new Client(socket);
-        registerNewClient(client);
+        final Client client = new Client(socket);
         threadManager.launchWorkerThread(client);
+        clients.add(client);
         client.sendReply(220, "Server welcome");
         Logger.debug("New client accepted");
     }
@@ -183,13 +180,9 @@ public class Server {
         return accountRepository;
     }
 
-    public CommandDispatcher getDispatcher() {
-        return dispatcher;
-    }
-
-    private void registerNewClient(Client connection) {
-        clients.add(connection);
-    }
+//    private void registerNewClient(Client connection) {
+//        clients.add(connection);
+//    }
 
     public Optional<Instant> getStartTimestamp() {
         return Optional.ofNullable(startTimestamp);

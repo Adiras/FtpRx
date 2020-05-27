@@ -1,3 +1,5 @@
 rootProject.name = 'ftprx'
 include 'application'
 include 'server'
+include 'server'
+

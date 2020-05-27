@@ -2,8 +2,8 @@ package com.ftprx.server.command;
 
 import com.ftprx.server.ActiveConnectionMode;
 import com.ftprx.server.CommandCode;
-import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.channel.Command;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -26,7 +26,7 @@ public class DataPortCommand extends AbstractCommand {
 
     @Override
     public void onCommand(Command command, Client client) {
-        final String hostPort = command.getFirstArgument(); // "192,168,1,105,223,91"
+        final String hostPort = command.getArgument(); // "192,168,1,105,223,91"
         final String[] fields = hostPort.split(","); // ["192","168","1","105","223","91"]
         client.openDataConnection(new ActiveConnectionMode(
                 payloadHostname(fields), payloadPort(fields)));
@@ -52,10 +52,5 @@ public class DataPortCommand extends AbstractCommand {
         byteBuffer.put((byte) p2);
         byteBuffer.flip();
         return byteBuffer.getInt();
-    }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
     }
 }

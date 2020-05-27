@@ -16,9 +16,4 @@ public class ListCommand extends AbstractCommand {
         Executors.newCachedThreadPool()
                 .execute(new DataTransferListingProcess(client, pathname));
     }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
-    }
 }

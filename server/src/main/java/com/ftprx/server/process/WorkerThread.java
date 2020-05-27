@@ -1,8 +1,7 @@
 package com.ftprx.server.process;
 
-import com.ftprx.server.Server;
-import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Reply;
 import com.ftprx.server.command.CommandDispatcher;
 
@@ -21,7 +20,7 @@ public class WorkerThread implements Runnable {
     public WorkerThread(@Nonnull Client client) {
         this.client = requireNonNull(client);
         this.connection = client.getControlConnection();
-        this.dispatcher = requireNonNull(Server.getInstance().getDispatcher());
+        this.dispatcher = new CommandDispatcher(client);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class WorkerThread implements Runnable {
 
                 Command command;
                 while ((command = commandBuffer.poll()) != null) {
-                    dispatcher.executeCommand(command, client);
+                    dispatcher.execute(command);
                 }
             }
         } catch (IOException e) {

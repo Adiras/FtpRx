@@ -4,7 +4,6 @@ import com.ftprx.server.util.ControlCharacters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 /**
  * A reply is an acknowledgment (positive or negative) sent from

@@ -1,7 +1,6 @@
 package com.ftprx.server.util;
 
-import jdk.internal.jline.internal.Nullable;
-
+import javax.annotation.Nullable;
 import javax.net.ServerSocketFactory;
 import java.net.DatagramSocket;
 import java.net.InetAddress;

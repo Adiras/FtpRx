@@ -17,9 +17,4 @@ public class SystemCommand extends AbstractCommand {
         //TODO Implement code
         client.sendReply(215, "UNIX Type: L8");
     }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
-    }
 }

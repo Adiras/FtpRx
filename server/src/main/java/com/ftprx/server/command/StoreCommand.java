@@ -1,10 +1,9 @@
 package com.ftprx.server.command;
 
 import com.ftprx.server.CommandCode;
-import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.channel.Command;
 
-import javax.annotation.CheckForNull;
 import java.io.*;
 import java.util.concurrent.Executors;
 
@@ -12,7 +11,7 @@ public class StoreCommand extends AbstractCommand {
 
     @Override
     public void onCommand(Command command, Client client) {
-        final String pathname = command.getArguments().get(0);
+        final String pathname = command.getArgument();
         if (pathname == null || pathname.equals("")) {
             client.sendReply(553, "Could not create file.");
         } else {
@@ -50,10 +49,5 @@ public class StoreCommand extends AbstractCommand {
                 });
             }
         }
-    }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
     }
 }

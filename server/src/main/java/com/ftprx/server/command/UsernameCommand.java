@@ -1,27 +1,20 @@
 package com.ftprx.server.command;
 
 import com.ftprx.server.CommandCode;
-import com.ftprx.server.Server;
-import com.ftprx.server.account.Account;
-import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.channel.Command;
 
 public class UsernameCommand extends AbstractCommand {
 
     @Override
     public void onCommand(Command command, Client client) {
-        Server facade = Server.getInstance();
-        final Account adminAccount = facade.getAccountRepository()
-                .findAccountByUsername("admin");
+        final String username = command.getArgument();
 
-        if (adminAccount != null) {
-            client.login(adminAccount);
-            client.sendReply(230, "User logged in");
+        if (username == null) {
+            client.sendReply(530, "Need parameter");
+            return;
         }
-    }
 
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
+        client.sendReply(331, "Password required for " + username);
     }
 }

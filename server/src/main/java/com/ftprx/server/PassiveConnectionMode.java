@@ -5,19 +5,19 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class PassiveConnectionMode implements ConnectionMode {
     private final int port;
 
     public PassiveConnectionMode(int port) {
+        if (!(port > 0 && port < 65535))
+            throw new IllegalArgumentException("Invalid port number");
         this.port = port;
     }
 
     @Override
     public void openConnection(@Nonnull Consumer<Socket> callback) {
-        Objects.requireNonNull(callback);
         Thread connectionThread = new Thread(() -> {
             try (ServerSocket socket = new ServerSocket(port)) {
                 callback.accept(socket.accept());

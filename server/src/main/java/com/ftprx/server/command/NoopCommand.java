@@ -15,9 +15,4 @@ public class NoopCommand extends AbstractCommand {
     public void onCommand(Command command, Client client) {
         client.sendReply(200, "OK.");
     }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
-    }
 }

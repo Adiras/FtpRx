@@ -1,12 +1,13 @@
 plugins {
-    id 'java'
+    id 'org.javamodularity.moduleplugin' version '1.5.0' apply false
 }
 
-group 'com.ftprx'
-version '1.0.0'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.javamodularity.moduleplugin'
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
 }

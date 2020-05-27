@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,12 +18,10 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class DataTransferProcess implements Runnable {
     private static final long CONNECTION_TIMEOUT = 2000; //ms
-//    private static final String INPUT_SHUTDOWN_MESSAGE = "Requested action aborted: DTP input stream is closed.";
-//    private static final String OUTPUT_SHUTDOWN_MESSAGE = "Requested action aborted: DTP output stream is closed.";
     protected final Client client;
 
     public DataTransferProcess(@Nonnull Client client) {
-        this.client = Objects.requireNonNull(client);
+        this.client = Objects.requireNonNull(client, "Client should not be null");
     }
 
     public abstract void perform();

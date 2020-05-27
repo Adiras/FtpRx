@@ -17,17 +17,12 @@ public class ChangeWorkingDirectoryCommand extends AbstractCommand {
 
     @Override
     public void onCommand(Command command, Client client) {
-        final String pathname = command.getArguments().get(0);
+        final String pathname = command.getArgument();
         if (pathname == null || pathname.equals("")) {
             client.sendReply(501, "Syntax error in parameters or arguments.");
         } else {
             client.changeWorkingDirectory(pathname);
             client.sendReply(200, "Directory changed to " + pathname);
         }
-    }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
     }
 }

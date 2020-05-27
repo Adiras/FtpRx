@@ -16,24 +16,26 @@ public class DataTransferListingProcess extends DataTransferProcess {
 
     public DataTransferListingProcess(@Nonnull Client client, @Nullable String pathname) {
         super(requireNonNull(client));
-        this.pathname = requireNonNull(pathname);
+        this.pathname = pathname;
     }
 
     @Override
     public void perform() {
-        System.out.println("data connection status: " + client.isDataConnectionOpen()); //debug
-        System.out.println("listning process pathname = " + pathname); //debug
         try {
             PrintWriter writer = new PrintWriter(client.getDataConnection().getOutputStream());
-            Files.walk(Paths.get(client.getWorkingDirectory()))
-                    .forEach(path -> writer.write(path.toString()));
-            writer.println("_1000GB.zip");
-            writer.println("_100GB.zip");
-            writer.println("_10MB.zip");
-            writer.println("_500MB.zip");
-            writer.println("_upload");
-            writer.flush();
-            client.sendReply(226, "Directory send OK.");
+            try {
+                Files.list(Paths.get(client.getWorkingDirectory()))
+                        .limit(10)
+                        .forEach(path -> {
+                            writer.write(path.getFileName().toString());
+                            System.out.println("path = " + path.getFileName().toString());
+                        });
+                writer.println("_EOF_");
+                writer.flush();
+                client.sendReply(226, "Directory send OK.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

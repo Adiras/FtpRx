@@ -4,10 +4,6 @@ import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 /*
  * This command causes the directory specified in the pathname
  * to be created as a directory (if the pathname is absolute)
@@ -18,7 +14,7 @@ public class MakeDirectoryCommand extends AbstractCommand {
 
     @Override
     public void onCommand(Command command, Client client) {
-        final String pathname = command.getArguments().get(0);
+        final String pathname = command.getArgument();
         if (pathname == null || pathname.equals("")) {
             client.sendReply(501, "Syntax error in parameters or arguments.");
         } else {
@@ -29,10 +25,5 @@ public class MakeDirectoryCommand extends AbstractCommand {
 //                e.printStackTrace();
 //            }
         }
-    }
-
-    @Override
-    public CommandCode[] dependency() {
-        return ANY;
     }
 }

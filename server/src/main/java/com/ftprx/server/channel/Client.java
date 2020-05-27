@@ -26,9 +26,9 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.*;
-import java.util.Objects;
-import java.util.concurrent.*;
+import java.net.Socket;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static java.util.Objects.requireNonNull;
 
@@ -94,18 +94,18 @@ public class Client {
     }
 
     public void receiveCommand(@Nullable Command command) {
-        if (command != null) {
-            commandBuffer.add(command);
-            lastCommand = command;
-        }
+        Optional.ofNullable(command).ifPresent(e -> {
+            commandBuffer.add(e);
+            lastCommand = e;
+        });
     }
 
     public void sendReply(Integer code, String text) {
         sendReply(new Reply(code.toString(), text));
     }
 
-    public void sendReply(Reply reply) {
-        replyBuffer.add(reply);
+    public void sendReply(@Nullable Reply reply) {
+        Optional.ofNullable(reply).ifPresent(replyBuffer::add);
     }
 
     public InputStream getInputStream() throws IOException {
@@ -136,8 +136,8 @@ public class Client {
         controlConnection.close();
     }
 
-    private void setDataConnection(Socket dataConnection) {
-        this.dataConnection = dataConnection;
+    private void setDataConnection(@Nonnull Socket dataConnection) {
+        this.dataConnection = requireNonNull(dataConnection);;
     }
 
     public ConcurrentLinkedQueue<Command> getBufferedCommands() {
