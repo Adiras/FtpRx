@@ -52,8 +52,6 @@ public class UserListController {
         if (selected == null)
             return;
 
-
-
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/user-edit.fxml"));
             Parent root = fxmlLoader.load();

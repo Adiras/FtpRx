@@ -19,17 +19,17 @@ package com.ftprx.server;
 import com.ftprx.server.account.AccountRepository;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.repository.FileAccountRepository;
+import com.ftprx.server.repository.InMemoryAccountRepository;
 import com.ftprx.server.thread.ListenerThread;
 import com.ftprx.server.thread.ThreadManager;
 import com.ftprx.server.util.SocketHelper;
 import com.google.inject.internal.cglib.core.$MethodWrapper;
 import org.tinylog.Logger;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
-import java.net.BindException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -43,25 +43,23 @@ import java.util.concurrent.Executors;
  */
 public class Server {
 
-    private static final String HOSTNAME   = "127.0.0.1";
     private static final int    PORT       = 21;
     private static final int    SO_TIMEOUT = 3000;
+    private static final String HOSTNAME   = "127.0.0.1";
 
     private static Server instance = null;
 
-    private static List<Client> clients;
+    private List<Client> clients;
     private Instant startTimestamp;
     private ServerSocket server;
     private ListenerThread listenerThread;
     private ServerStatus status;
     private AccountRepository accountRepository;
-    private ThreadManager threadManager;
 
-    public Server() {
+    private Server() {
         this.clients = new CopyOnWriteArrayList<>();
+        this.accountRepository = new InMemoryAccountRepository();
         this.status = ServerStatus.STOPPED;
-        this.accountRepository = new FileAccountRepository("C:\\Users\\wkacp\\Desktop\\ftprx\\server\\src\\main\\resources\\accounts.json");
-        this.threadManager = new ThreadManager();
     }
 
     /**
@@ -71,7 +69,6 @@ public class Server {
     public synchronized void start() {
         if (!SocketHelper.isServerSocketOpen(server)) {
             try {
-//                server = ServerSocketFactory.getDefault().createServerSocket(PORT, 1, InetAddress.getByName("localhost"));
                 server = new ServerSocket();
                 server.setSoTimeout(SO_TIMEOUT);
                 server.bind(new InetSocketAddress(HOSTNAME, PORT));
@@ -79,10 +76,8 @@ public class Server {
                 listenerThread.registerClientConnectObserver(this::acceptClient);
                 listenerThread.start();
                 status = ServerStatus.RUNNING;
-            } catch (BindException e) {
-                Logger.warn(e.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Logger.error(e);
             }
         }
         startTimestamp = Instant.now();
@@ -97,8 +92,8 @@ public class Server {
             if (server != null) {
                 server.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Logger.error(e);
         }
 
         if (listenerThread != null && listenerThread.isAlive()) {
@@ -128,36 +123,32 @@ public class Server {
         status = ServerStatus.PAUSED;
     }
 
+    @Nonnull
     public ServerStatus getStatus() {
         return status;
     }
 
-    public Optional<String> getAddress() {
-        if (server == null) {
-            return Optional.empty();
-        }
-        return Optional.of(server.getInetAddress().getHostAddress());
+    public InetAddress getAddress() {
+        return server.getInetAddress();
     }
 
-    public Optional<Integer> getPort() {
-        if (server == null) {
-            return Optional.empty();
-        }
-        return Optional.of(server.getLocalPort());
+    public int getPort() {
+        return server.getLocalPort();
     }
 
     public Optional<ServerSocket> getServer() {
         return Optional.ofNullable(server);
     }
 
+    @Nonnull
     public List<Client> getClients() {
         return clients;
     }
 
     private void acceptClient(Socket socket) {
         final Client client = new Client(socket);
-        threadManager.launchWorkerThread(client);
-        clients.add(client);
+        registerNewClient(client);
+        ThreadManager.launchWorkerThread(client);
         client.sendReply(220, "Server welcome");
         Logger.debug("New client accepted");
     }
@@ -172,22 +163,19 @@ public class Server {
         }
     }
 
-    public ThreadManager getThreadManager() {
-        return threadManager;
-    }
-
     public AccountRepository getAccountRepository() {
         return accountRepository;
     }
 
-//    private void registerNewClient(Client connection) {
-//        clients.add(connection);
-//    }
+    private void registerNewClient(Client connection) {
+        clients.add(connection);
+    }
 
     public Optional<Instant> getStartTimestamp() {
         return Optional.ofNullable(startTimestamp);
     }
 
+    @Nonnull
     public synchronized static Server getInstance() {
         if (instance == null) {
             instance = new Server();

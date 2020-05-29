@@ -53,6 +53,8 @@ public class ListenerThread extends Thread {
     }
 
     private void notifyObservers(@Nonnull Socket client) {
-        observers.forEach(observer -> observer.onClientConnected(client));
+        observers.forEach(observer -> {
+            observer.onClientConnected(client);
+        });
     }
 }

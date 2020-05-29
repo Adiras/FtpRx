@@ -1,8 +1,7 @@
-package com.ftprx.server.command;
+package com.ftprx.server;
 
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
-import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 
@@ -12,10 +11,13 @@ public class CommandDispatcher {
     private final CommandLookupTable commandLookupTable;
     private final Client client;
 
+    /**
+     * Create a new {@link CommandDispatcher} instance.
+     * @param client the client that is assigned for this dispatcher.
+     */
     public CommandDispatcher(@Nonnull Client client) {
         this.client = requireNonNull(client, "Client should not be null");
-        this.commandLookupTable = new CommandLookupTable();
-        new BootstrapCommands(commandLookupTable);
+        this.commandLookupTable = CommandLookupTable.bootstrap();
     }
 
     public void execute(Command command) {
@@ -23,11 +25,6 @@ public class CommandDispatcher {
             onExecuteUnknownCommand(command, client);
             return;
         }
-
-//        CommandHandler handler = resolveCommandHandler(command);
-//        handler.execute(command);
-
-        Logger.debug("CommandDispatcher: {}", command.toString());
         commandLookupTable.getCommand(command).onCommand(command, client);
 //        if (handler.isRequireDependency()) {
 //            final Command clientLastCommand = client.getLastCommand();

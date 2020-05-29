@@ -4,7 +4,7 @@ plugins {
     id 'org.beryx.jlink' version '2.19.0'
 }
 
-mainClassName = 'ftprx.application/com.ftprx.application.Main'
+mainClassName = "$moduleName/com.ftprx.application.FtpRxApplication"
 
 dependencies {
     compile project(':server');

@@ -3,7 +3,8 @@ package com.ftprx.server.process;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Reply;
-import com.ftprx.server.command.CommandDispatcher;
+import com.ftprx.server.CommandDispatcher;
+import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -36,13 +37,13 @@ public class WorkerThread implements Runnable {
                 Reply reply;
                 while ((reply = replyBuffer.poll()) != null) {
                     writer.write(reply.toString());
-                    System.out.println("SERVER ---> '" + reply.getCode() + " " + reply.getText() + "'"); //debug
+                    Logger.debug("Server -> '{} {}'", reply.getCode(), reply.getText());
                 }
                 writer.flush();
 
                 String line;
                 while (reader.ready() && (line = reader.readLine()) != null) {
-                    System.out.println("SERVER <--- '" + line + "'");
+                    Logger.debug("Server <- '{}'", line);
                     client.receiveCommand(Command.valueOf(line));
                 }
 
@@ -53,9 +54,8 @@ public class WorkerThread implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            /* Do nothing */
         } finally {
-            System.out.println("closing control connection!"); //debug
+            Logger.debug("Closing control connection");
             try {
                 client.closeControlConnection();
             } catch (IOException e) {

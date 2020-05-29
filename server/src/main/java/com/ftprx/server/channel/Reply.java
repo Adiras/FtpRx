@@ -38,8 +38,7 @@ public class Reply {
     public String toString() {
         return code + ControlCharacters.SP + text + ControlCharacters.CRLF;
     }
-
-    //    public static final class ReplyBuilder {
+//    public static final class ReplyBuilder {
 //        private String code;
 //        private String text;
 //

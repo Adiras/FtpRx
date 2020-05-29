@@ -10,6 +10,11 @@ public class ActiveConnectionMode implements ConnectionMode {
     private final String host;
     private final int port;
 
+    /**
+     * Create a new {@link ActiveConnectionMode} instance.
+     * @param host the host name, or {@code null} for the loopback address.
+     * @param port the port number.
+     */
     public ActiveConnectionMode(String host, int port) {
         if (!(port > 0 && port < 65535))
             throw new IllegalArgumentException("Invalid port number");
@@ -17,6 +22,11 @@ public class ActiveConnectionMode implements ConnectionMode {
         this.port = port;
     }
 
+    /**
+     * Opens the data connection between client and server.
+     * The method blocks thread until a connection is made.
+     * @param callback operation that will be perform after a successful connection.
+     */
     @Override
     public void openConnection(@Nonnull Consumer<Socket> callback) {
         Thread connectionThread = new Thread(() -> {

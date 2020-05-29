@@ -39,7 +39,6 @@ public class StoreCommand extends AbstractCommand {
                             writer.append((char) character);
                         }
                         writer.flush();
-                        System.out.println("data = " + data);
 
                         client.closeDataConnection();
                         client.sendReply(226, "Transfer complete.");

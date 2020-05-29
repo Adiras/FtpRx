@@ -57,7 +57,7 @@ public class UserEditController {
         dialog.setHeaderText("Change account password");
         dialog.setContentText("Please enter new password:");
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(name -> System.out.println("Your name: " + name));
+//        result.ifPresent(name -> System.out.println("Your name: " + name));
     }
 
     @FXML

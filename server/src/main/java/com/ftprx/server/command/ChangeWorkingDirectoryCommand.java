@@ -5,7 +5,6 @@ import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
 /*
- *
  * This command allows the user to work with a different
  * directory or dataset for file storage or retrieval without
  * altering his login or accounting information. Transfer

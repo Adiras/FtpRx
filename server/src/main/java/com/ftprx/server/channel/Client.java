@@ -94,10 +94,10 @@ public class Client {
     }
 
     public void receiveCommand(@Nullable Command command) {
-        Optional.ofNullable(command).ifPresent(e -> {
-            commandBuffer.add(e);
-            lastCommand = e;
-        });
+        if (command != null) {
+            commandBuffer.add(command);
+            lastCommand = command; // TODO: does not work
+        }
     }
 
     public void sendReply(Integer code, String text) {
@@ -116,11 +116,12 @@ public class Client {
         return controlConnection.getOutputStream();
     }
 
+    @Nullable
     public Socket getDataConnection() {
         return dataConnection;
     }
 
-    public void openDataConnection(ConnectionMode mode) {
+    public void openDataConnection(@Nonnull ConnectionMode mode) {
         mode.openConnection(this::setDataConnection);
     }
 
@@ -128,6 +129,7 @@ public class Client {
         dataConnection.close();
     }
 
+    @Nonnull
     public Socket getControlConnection() {
         return controlConnection;
     }

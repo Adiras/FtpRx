@@ -11,10 +11,10 @@ import java.nio.file.Paths;
 
 import static java.util.Objects.requireNonNull;
 
-public class DataTransferListingProcess extends DataTransferProcess {
+public class ListingProcess extends DataTransferProcess {
     private final String pathname;
 
-    public DataTransferListingProcess(@Nonnull Client client, @Nullable String pathname) {
+    public ListingProcess(@Nonnull Client client, @Nullable String pathname) {
         super(requireNonNull(client));
         this.pathname = pathname;
     }
