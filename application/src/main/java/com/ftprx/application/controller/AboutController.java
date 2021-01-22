@@ -1,4 +1,4 @@
-package com.ftprx.application.controler;
+package com.ftprx.application.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

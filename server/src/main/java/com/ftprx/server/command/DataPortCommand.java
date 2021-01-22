@@ -1,10 +1,11 @@
 package com.ftprx.server.command;
 
 import com.ftprx.server.ActiveConnectionMode;
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -22,14 +23,20 @@ import java.nio.ByteOrder;
  *      PORT h1,h2,h3,h4,p1,p2
  * where h1 is the high order 8 bits of the internet host address.
  */
-public class DataPortCommand extends AbstractCommand {
+public class DataPortCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         final String hostPort = command.getArgument(); // "192,168,1,105,223,91"
         final String[] fields = hostPort.split(","); // ["192","168","1","105","223","91"]
-        client.openDataConnection(new ActiveConnectionMode(
-                payloadHostname(fields), payloadPort(fields)));
+//        client.openDataConnection(new ActiveConnectionMode(payloadHostname(fields), payloadPort(fields)));
+        new ActiveConnectionMode(payloadHostname(fields), payloadPort(fields))
+                .openConnection(client::setDataConnection);
+//        try {
+//            client.setDataConnection(new Socket(payloadHostname(fields), payloadPort(fields)));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         client.sendReply(200, "PORT command successful.");
     }
 

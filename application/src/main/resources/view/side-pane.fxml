@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxWidth="320.0" minWidth="320.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ftprx.application.controler.SidePaneController">
+<AnchorPane maxWidth="320.0" minWidth="320.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ftprx.application.controller.SidePaneController">
    <children>
       <Rectangle arcWidth="5.0" fill="#dedede" height="40.0" smooth="false" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="320.0" />
       <Text fontSmoothingType="LCD" layoutX="35.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status and Configuration Overview">

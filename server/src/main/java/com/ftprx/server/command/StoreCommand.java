@@ -1,16 +1,15 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
 import java.io.*;
 import java.util.concurrent.Executors;
 
-public class StoreCommand extends AbstractCommand {
+public class StoreCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         final String pathname = command.getArgument();
         if (pathname == null || pathname.equals("")) {
             client.sendReply(553, "Could not create file.");

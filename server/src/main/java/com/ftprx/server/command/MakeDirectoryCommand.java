@@ -1,6 +1,5 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
@@ -10,10 +9,10 @@ import com.ftprx.server.channel.Command;
  * or as a subdirectory of the current working directory (if
  * the pathname is relative).
  */
-public class MakeDirectoryCommand extends AbstractCommand {
+public class MakeDirectoryCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         final String pathname = command.getArgument();
         if (pathname == null || pathname.equals("")) {
             client.sendReply(501, "Syntax error in parameters or arguments.");

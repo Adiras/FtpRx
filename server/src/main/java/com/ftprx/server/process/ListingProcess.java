@@ -1,6 +1,7 @@
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
+import com.ftprx.server.util.ControlCharacters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,19 +24,10 @@ public class ListingProcess extends DataTransferProcess {
     public void perform() {
         try {
             PrintWriter writer = new PrintWriter(client.getDataConnection().getOutputStream());
-            try {
-                Files.list(Paths.get(client.getWorkingDirectory()))
-                        .limit(10)
-                        .forEach(path -> {
-                            writer.write(path.getFileName().toString());
-                            System.out.println("path = " + path.getFileName().toString());
-                        });
-                writer.println("_EOF_");
-                writer.flush();
-                client.sendReply(226, "Directory send OK.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            writer.println("test"+ ControlCharacters.CRLF);
+            writer.println("test2.txt" + ControlCharacters.CRLF);
+            writer.flush();
+            client.sendReply(226, "Directory send OK.");
         } catch (IOException e) {
             e.printStackTrace();
         }

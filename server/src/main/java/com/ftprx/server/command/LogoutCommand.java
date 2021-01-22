@@ -1,15 +1,14 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
 import java.io.IOException;
 
-public class LogoutCommand extends AbstractCommand {
+public class LogoutCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         try {
             client.sendReply(221, "Goodbye.");
             client.closeControlConnection();

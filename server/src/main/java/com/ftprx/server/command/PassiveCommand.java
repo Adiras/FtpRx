@@ -1,17 +1,14 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.PassiveConnectionMode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.util.SocketHelper;
 
-import javax.annotation.CheckForNull;
-
-public class PassiveCommand extends AbstractCommand {
+public class PassiveCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         final int port = SocketHelper.findAvailableTcpPort(51000, 60000);
 
         byte[] portBytes = new byte[4];

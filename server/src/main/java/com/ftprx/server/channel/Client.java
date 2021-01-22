@@ -16,6 +16,7 @@
 
 package com.ftprx.server.channel;
 
+import com.ftprx.server.CommandCode;
 import com.ftprx.server.ConnectionMode;
 import com.ftprx.server.account.Account;
 import com.ftprx.server.util.SocketHelper;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -52,7 +54,8 @@ public class Client {
 
     private Account account;
     private String workingDirectory;
-    private Command lastCommand;
+
+    private String selectedUsername;
 
     public Client(@Nonnull Socket controlConnection) {
         this.controlConnection = requireNonNull(controlConnection);
@@ -65,18 +68,25 @@ public class Client {
         changeWorkingDirectory(account.getHomeDirectory());
     }
 
+    public boolean hasSelectedUsername() {
+        return selectedUsername != null;
+    }
+
+    public String getSelectedUsername() {
+        return selectedUsername;
+    }
+
+    public void setSelectedUsername(String selectedUsername) {
+        this.selectedUsername = selectedUsername;
+    }
+
     public void logout() {
-        this.account = null;
+        account = null;
         changeWorkingDirectory(null);
     }
 
     public boolean isLoggedIn() {
         return account != null;
-    }
-
-    @CheckForNull
-    public Command getLastCommand() {
-        return lastCommand;
     }
 
     public void changeWorkingDirectory(@Nullable String workingDirectory) {
@@ -96,7 +106,9 @@ public class Client {
     public void receiveCommand(@Nullable Command command) {
         if (command != null) {
             commandBuffer.add(command);
-            lastCommand = command; // TODO: does not work
+//            if (!command.equalsCode(CommandCode.PASS)) {
+//                selectedUsername = null;
+//            }
         }
     }
 
@@ -138,8 +150,8 @@ public class Client {
         controlConnection.close();
     }
 
-    private void setDataConnection(@Nonnull Socket dataConnection) {
-        this.dataConnection = requireNonNull(dataConnection);;
+    public void setDataConnection(@Nonnull Socket dataConnection) {
+        this.dataConnection = requireNonNull(dataConnection);
     }
 
     public ConcurrentLinkedQueue<Command> getBufferedCommands() {

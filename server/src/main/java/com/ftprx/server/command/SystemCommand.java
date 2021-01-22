@@ -1,6 +1,5 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
@@ -10,10 +9,10 @@ import com.ftprx.server.channel.Command;
  * word one of the system names listed in the current version
  * of the Assigned Numbers document
  */
-public class SystemCommand extends AbstractCommand {
+public class SystemCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         //TODO Implement code
         client.sendReply(215, "UNIX Type: L8");
     }

@@ -25,7 +25,7 @@ public class CommandDispatcher {
             onExecuteUnknownCommand(command, client);
             return;
         }
-        commandLookupTable.getCommand(command).onCommand(command, client);
+        commandLookupTable.getCommand(command).execute(command, client);
 //        if (handler.isRequireDependency()) {
 //            final Command clientLastCommand = client.getLastCommand();
 //            if (clientLastCommand == null) {

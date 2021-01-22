@@ -1,6 +1,5 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
@@ -12,13 +11,14 @@ import com.ftprx.server.channel.Command;
  * pathname specifying a directory or other system dependent
  * file group designator.
  */
-public class ChangeWorkingDirectoryCommand extends AbstractCommand {
+public class ChangeWorkingDirectoryCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         final String pathname = command.getArgument();
         if (pathname == null || pathname.equals("")) {
-            client.sendReply(501, "Syntax error in parameters or arguments.");
+            client.sendReply(200, "Directory changed to " + pathname); // bug in mozilla ftp
+//            client.sendReply(501, "Syntax error in parameters or arguments.");
         } else {
             client.changeWorkingDirectory(pathname);
             client.sendReply(200, "Directory changed to " + pathname);

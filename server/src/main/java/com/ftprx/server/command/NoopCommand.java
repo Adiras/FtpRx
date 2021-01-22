@@ -1,6 +1,5 @@
 package com.ftprx.server.command;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
@@ -9,10 +8,10 @@ import com.ftprx.server.channel.Command;
  * entered commands. It specifies no action other than that
  * the server send an OK reply.
  */
-public class NoopCommand extends AbstractCommand {
+public class NoopCommand extends SimpleCommand {
 
     @Override
-    public void onCommand(Command command, Client client) {
+    public void execute(Command command, Client client) {
         client.sendReply(200, "OK.");
     }
 }

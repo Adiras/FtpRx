@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * rather than initiate a connection on the data port.
  */
 public abstract class DataTransferProcess implements Runnable {
-    private static final long CONNECTION_TIMEOUT = 2000; //ms
+    private static final long CONNECTION_TIMEOUT = 1000; //ms
     protected final Client client;
 
     public DataTransferProcess(@Nonnull Client client) {

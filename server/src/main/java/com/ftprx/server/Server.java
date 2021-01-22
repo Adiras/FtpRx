@@ -17,6 +17,7 @@
 package com.ftprx.server;
 
 import com.ftprx.server.account.AccountRepository;
+import com.ftprx.server.account.ObservableAccountRepository;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.repository.FileAccountRepository;
 import com.ftprx.server.repository.InMemoryAccountRepository;
@@ -54,11 +55,11 @@ public class Server {
     private ServerSocket server;
     private ListenerThread listenerThread;
     private ServerStatus status;
-    private AccountRepository accountRepository;
+    private ObservableAccountRepository accountRepository;
 
     private Server() {
         this.clients = new CopyOnWriteArrayList<>();
-        this.accountRepository = new InMemoryAccountRepository();
+        this.accountRepository = new FileAccountRepository("users.ftprx");
         this.status = ServerStatus.STOPPED;
     }
 
@@ -163,7 +164,7 @@ public class Server {
         }
     }
 
-    public AccountRepository getAccountRepository() {
+    public ObservableAccountRepository getAccountRepository() {
         return accountRepository;
     }
 

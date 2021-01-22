@@ -6,14 +6,13 @@ import com.ftprx.server.command.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.ftprx.server.CommandCode.*;
 import static com.ftprx.server.CommandCode.LIST;
 import static java.util.Objects.requireNonNull;
 
-public class CommandLookupTable extends HashMap<CommandCode, AbstractCommand> {
+public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
 
     /**
      * Create a new {@link CommandLookupTable} instance with pre-registered commands.
@@ -41,29 +40,29 @@ public class CommandLookupTable extends HashMap<CommandCode, AbstractCommand> {
     }
 
     /**
-     * Assign the {@link CommandCode} with given {@link AbstractCommand}.
+     * Assign the {@link CommandCode} with given {@link SimpleCommand}.
      */
     public void registerCommand(@Nonnull CommandCode code,
-                                @Nonnull Supplier<AbstractCommand> commandSupplier) {
+                                @Nonnull Supplier<SimpleCommand> commandSupplier) {
         registerCommand(code, commandSupplier.get());
     }
 
     /**
-     * Assign the {@link CommandCode} with given {@link AbstractCommand}.
+     * Assign the {@link CommandCode} with given {@link SimpleCommand}.
      */
     public void registerCommand(@Nonnull CommandCode code,
-                                @Nonnull AbstractCommand command) {
+                                @Nonnull SimpleCommand command) {
         put(requireNonNull(code), requireNonNull(command));
     }
 
     /**
      * @param command the command which {@link CommandCode} is looking for.
-     * @return the {@link AbstractCommand} associated with the given command,
+     * @return the {@link SimpleCommand} associated with the given command,
      *         or null if the command is not registered.
      */
     @Nullable
-    public AbstractCommand getCommand(@Nonnull Command command) {
-        for (Entry<CommandCode, AbstractCommand> entry : entrySet()) {
+    public SimpleCommand getCommand(@Nonnull Command command) {
+        for (Entry<CommandCode, SimpleCommand> entry : entrySet()) {
             if (command.equalsCode(entry.getKey())) {
                 return entry.getValue();
             }
@@ -84,7 +83,7 @@ public class CommandLookupTable extends HashMap<CommandCode, AbstractCommand> {
      * @return true if the command is registered in this {@link CommandLookupTable}.
      */
     public boolean isCommandRegistered(@Nonnull Command command) {
-        for (Entry<CommandCode, AbstractCommand> entry : entrySet()) {
+        for (Entry<CommandCode, SimpleCommand> entry : entrySet()) {
             if (command.equalsCode(entry.getKey())) {
                 return true;
             }

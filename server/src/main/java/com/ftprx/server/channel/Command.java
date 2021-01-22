@@ -1,9 +1,13 @@
 package com.ftprx.server.channel;
 
 import com.ftprx.server.CommandCode;
+import com.ftprx.server.account.AccountRepository;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,26 +40,22 @@ public class Command {
         return argument;
     }
 
+    public boolean hasArgument() {
+        return argument != null;
+    }
+
     public boolean equalsCode(CommandCode e) {
         return code.equals(e.name());
     }
 
-    public static Command valueOf(String str) {
+    public static Command valueOf(String input) {
         int codeMaxLength = 4;
-        int endIndex = Math.min(str.length(), codeMaxLength);
-        String code = str.substring(0, endIndex).trim();
+        int endIndex = Math.min(input.length(), codeMaxLength);
+        String code = input.substring(0, endIndex).trim();
         String argument = null;
-        if (str.trim().length() != code.length()) {
-            argument = str.substring(code.length() + 1).trim();
+        if (input.trim().length() != code.length()) {
+            argument = input.substring(code.length() + 1).trim();
         }
         return new Command(code, argument);
-    }
-
-    @Override
-    public String toString() {
-        return "Command{" +
-                "code='" + code + '\'' +
-                ", argument='" + argument + '\'' +
-                '}';
     }
 }

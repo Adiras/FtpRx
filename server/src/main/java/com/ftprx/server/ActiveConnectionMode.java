@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class ActiveConnectionMode implements ConnectionMode {
@@ -29,15 +30,10 @@ public class ActiveConnectionMode implements ConnectionMode {
      */
     @Override
     public void openConnection(@Nonnull Consumer<Socket> callback) {
-        Thread connectionThread = new Thread(() -> {
-            try (Socket socket = new Socket(host, port)) {
-                callback.accept(socket);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        connectionThread.start();
+        try (Socket socket = new Socket(host, port)) {
+            callback.accept(socket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

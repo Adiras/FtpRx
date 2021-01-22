@@ -1,12 +1,12 @@
-package com.ftprx.server.repository;
+package com.ftprx.server.account;
 
-import com.ftprx.server.account.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -22,15 +22,14 @@ import static org.tinylog.Logger.error;
 
 public class FileAccountRepository implements ObservableAccountRepository {
 
+    private AccountRepositoryEventManager events;
     private final Gson gson;
-    private final Path repositoryFile;
+    private final Path accountsFile;
     private final Set<AccountRepositoryChangeListener> listeners;
 
     public FileAccountRepository(String filename) {
-        this.repositoryFile = Paths.get(filename);
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+        this.accountsFile = Paths.get(filename);
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
 
         listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -108,11 +107,11 @@ public class FileAccountRepository implements ObservableAccountRepository {
         saveFile(toSave);
     }
 
-    private void createRepositoryFileIfNotExists() {
-        if (!exists(repositoryFile)) {
+    private void createAccountsFileIfNotExists() {
+        if (!exists(accountsFile)) {
             debug("Account file not found!");
             try {
-                createFile(repositoryFile);
+                createFile(accountsFile);
             } catch (Exception e) {
                 error(e.getMessage());
             }
@@ -120,8 +119,8 @@ public class FileAccountRepository implements ObservableAccountRepository {
     }
 
     private void saveFile(List<Account> accounts) {
-        createRepositoryFileIfNotExists();
-        try (Writer writer = newBufferedWriter(repositoryFile)) {
+        createAccountsFileIfNotExists();
+        try (Writer writer = newBufferedWriter(accountsFile)) {
             gson.toJson(accounts, writer);
         } catch (Exception e) {
             error(e.getMessage());
@@ -129,8 +128,8 @@ public class FileAccountRepository implements ObservableAccountRepository {
     }
 
     public List<Account> readFile() {
-        createRepositoryFileIfNotExists();
-        try (Reader reader = newBufferedReader(repositoryFile)) {
+        createAccountsFileIfNotExists();
+        try (Reader reader = newBufferedReader(accountsFile)) {
             return asList(gson.fromJson(reader, Account[].class));
         } catch (Exception e) {
             return emptyList();

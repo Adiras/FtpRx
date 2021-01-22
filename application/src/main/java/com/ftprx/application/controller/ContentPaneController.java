@@ -1,4 +1,4 @@
-package com.ftprx.application.controler;
+package com.ftprx.application.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;

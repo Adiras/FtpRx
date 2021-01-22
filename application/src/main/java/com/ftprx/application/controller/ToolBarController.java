@@ -1,4 +1,4 @@
-package com.ftprx.application.controler;
+package com.ftprx.application.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -6,7 +6,13 @@ import java.util.ResourceBundle;
 import com.ftprx.server.Server;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 public class ToolBarController {
 
@@ -26,7 +32,7 @@ public class ToolBarController {
     private Button pauseButton;
 
     @FXML
-    private Button userListButton;
+    private Button userManagerButton;
 
     @FXML
     void onPauseButtonClick(ActionEvent event) {
@@ -55,11 +61,26 @@ public class ToolBarController {
         pauseButton.setDisable(true);
     }
 
-
-
     @FXML
-    void onUserListButtonClick(ActionEvent event) {
+    void onUserManagerButtonClick(ActionEvent event) {
+        showAddUserWindow();
+    }
 
+    private void showAddUserWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/user-manager.fxml"));
+            Parent root = loader.load();
+            UserManagerController controller = loader.getController();
+            Stage stage = new Stage();
+            controller.setStage(stage);
+            stage.setOnCloseRequest(event -> controller.onCloseRequest());
+            stage.setScene(new Scene(root, 600, 500));
+            stage.setTitle("User Manager");
+            stage.setResizable(false);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
