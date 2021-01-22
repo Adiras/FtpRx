@@ -17,6 +17,7 @@
 package com.ftprx.server;
 
 import com.ftprx.server.account.AccountRepository;
+import com.ftprx.server.account.ObservableAccountRepository;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.repository.FileAccountRepository;
 import com.ftprx.server.repository.InMemoryAccountRepository;
@@ -43,22 +44,20 @@ import java.util.concurrent.Executors;
  */
 public class Server {
 
-    private static final int    PORT       = 21;
-    private static final int    SO_TIMEOUT = 3000;
-    private static final String HOSTNAME   = "127.0.0.1";
-
+    private static final int PORT = 21;
+    private static final int SO_TIMEOUT = 3000;
+    private static final String HOSTNAME = "127.0.0.1";
     private static Server instance = null;
-
-    private List<Client> clients;
+    private final List<Client> clients;
     private Instant startTimestamp;
     private ServerSocket server;
     private ListenerThread listenerThread;
     private ServerStatus status;
-    private AccountRepository accountRepository;
+    private ObservableAccountRepository accountRepository;
 
     private Server() {
         this.clients = new CopyOnWriteArrayList<>();
-        this.accountRepository = new InMemoryAccountRepository();
+        this.accountRepository = new FileAccountRepository("users.ftprx");
         this.status = ServerStatus.STOPPED;
     }
 
@@ -95,7 +94,6 @@ public class Server {
         } catch (Exception e) {
             Logger.error(e);
         }
-
         if (listenerThread != null && listenerThread.isAlive()) {
             listenerThread.interrupt();
         }
@@ -163,16 +161,12 @@ public class Server {
         }
     }
 
-    public AccountRepository getAccountRepository() {
+    public ObservableAccountRepository getAccountRepository() {
         return accountRepository;
     }
 
     private void registerNewClient(Client connection) {
         clients.add(connection);
-    }
-
-    public Optional<Instant> getStartTimestamp() {
-        return Optional.ofNullable(startTimestamp);
     }
 
     @Nonnull

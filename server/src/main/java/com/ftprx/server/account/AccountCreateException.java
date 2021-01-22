@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.ftprx.server.command;
+package com.ftprx.server.account;
 
-import com.ftprx.server.channel.Client;
-import com.ftprx.server.channel.Command;
+/**
+ * Caused if something went wrong creating a new instance of the
+ * {@link Account} class, usually thrown by the constructor.
+ */
+public class AccountCreateException extends Throwable {
+    // Message when the username does not meet the length standards
+    public static final String WRONG_USERNAME_LENGTH = "Wrong username length";
 
-public class PrintWorkingDirectoryCommand extends SimpleCommand {
-
-    @Override
-    public void execute(Command command, Client client) {
-        String dir = client.getWorkingDirectory();
-        if (dir != null)
-        client.sendReply(257, dir);
+    public AccountCreateException(String message) {
+        super(message);
     }
 }

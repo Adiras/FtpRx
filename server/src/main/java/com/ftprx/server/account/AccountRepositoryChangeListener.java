@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.ftprx.server.command;
+package com.ftprx.server.account;
 
-import com.ftprx.server.channel.Client;
-import com.ftprx.server.channel.Command;
+import javax.annotation.Nonnull;
 
-public class PrintWorkingDirectoryCommand extends SimpleCommand {
-
-    @Override
-    public void execute(Command command, Client client) {
-        String dir = client.getWorkingDirectory();
-        if (dir != null)
-        client.sendReply(257, dir);
-    }
+/**
+ * Interface that receives notifications of changes to an {@link AccountRepository}.
+ */
+public interface AccountRepositoryChangeListener {
+    void onInsertAccount(@Nonnull Account account);
+    void onDeleteEvent(@Nonnull Account account);
+    void onUpdateEvent(@Nonnull Account account);
 }

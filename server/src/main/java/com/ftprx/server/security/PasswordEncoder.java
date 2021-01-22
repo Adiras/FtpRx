@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.ftprx.server.command;
+package com.ftprx.server.security;
 
-import com.ftprx.server.channel.Client;
-import com.ftprx.server.channel.Command;
+public class PasswordEncoder {
 
-public class PrintWorkingDirectoryCommand extends SimpleCommand {
-
-    @Override
-    public void execute(Command command, Client client) {
-        String dir = client.getWorkingDirectory();
-        if (dir != null)
-        client.sendReply(257, dir);
-    }
+//    public String encode(CharSequence rawPassword) {
+//
+//    }
+//
+//    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+//
+//    }
 }

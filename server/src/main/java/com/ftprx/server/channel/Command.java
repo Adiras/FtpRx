@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019, FtpRx Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ftprx.server.channel;
 
 import com.ftprx.server.CommandCode;
@@ -5,7 +21,8 @@ import com.ftprx.server.CommandCode;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static java.util.Objects.requireNonNull;
+
+import java.util.Objects;
 
 /**
  * The commands are Telnet character strings transmitted over the control connections.
@@ -24,7 +41,7 @@ public class Command {
     private final String argument;
 
     public Command(@Nonnull String code, @Nullable String arguments) {
-        this.code = requireNonNull(code);
+        this.code = Objects.requireNonNull(code);
         this.argument = arguments;
     }
 
@@ -36,26 +53,22 @@ public class Command {
         return argument;
     }
 
+    public boolean hasArgument() {
+        return argument != null;
+    }
+
     public boolean equalsCode(CommandCode e) {
         return code.equals(e.name());
     }
 
-    public static Command valueOf(String str) {
+    public static Command valueOf(String input) {
         int codeMaxLength = 4;
-        int endIndex = Math.min(str.length(), codeMaxLength);
-        String code = str.substring(0, endIndex).trim();
+        int endIndex = Math.min(input.length(), codeMaxLength);
+        String code = input.substring(0, endIndex).trim();
         String argument = null;
-        if (str.trim().length() != code.length()) {
-            argument = str.substring(code.length() + 1).trim();
+        if (input.trim().length() != code.length()) {
+            argument = input.substring(code.length() + 1).trim();
         }
         return new Command(code, argument);
-    }
-
-    @Override
-    public String toString() {
-        return "Command{" +
-                "code='" + code + '\'' +
-                ", argument='" + argument + '\'' +
-                '}';
     }
 }

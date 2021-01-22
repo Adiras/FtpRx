@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019, FtpRx Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
@@ -17,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  * rather than initiate a connection on the data port.
  */
 public abstract class DataTransferProcess implements Runnable {
-    private static final long CONNECTION_TIMEOUT = 2000; //ms
+    private static final long CONNECTION_TIMEOUT = 2_000; // ms
     protected final Client client;
 
     public DataTransferProcess(@Nonnull Client client) {

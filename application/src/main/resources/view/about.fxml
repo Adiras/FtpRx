@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ftprx.application.controler.AboutController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ftprx.application.controller.AboutController">
    <children>
       <Rectangle fill="#ededed" height="45.0" layoutY="237.0" smooth="false" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="420.0" />
       <Text fill="#545454" layoutX="173.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FtpRx">

@@ -6,7 +6,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
-<ToolBar prefHeight="60.0" prefWidth="455.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ftprx.application.controler.ToolBarController">
+<ToolBar prefHeight="60.0" prefWidth="455.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ftprx.application.controller.ToolBarController">
    <items>
       <Button fx:id="startButton" contentDisplay="TOP" focusTraversable="false" mnemonicParsing="false" onAction="#onStartButtonClick" prefHeight="49.0" prefWidth="49.0" text="Start">
          <graphic>
@@ -36,7 +36,7 @@
          </graphic>
       </Button>
       <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
-      <Button fx:id="userListButton" contentDisplay="TOP" focusTraversable="false" mnemonicParsing="false" onAction="#onUserListButtonClick" prefHeight="49.0" prefWidth="49.0" text="Users">
+      <Button fx:id="userManagerButton" contentDisplay="TOP" focusTraversable="false" mnemonicParsing="false" onAction="#onUserManagerButtonClick" prefHeight="49.0" prefWidth="49.0" text="Users">
          <graphic>
             <ImageView fitHeight="19.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
                <image>

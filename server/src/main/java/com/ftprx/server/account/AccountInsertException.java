@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package com.ftprx.server.command;
+package com.ftprx.server.account;
 
-import com.ftprx.server.channel.Client;
-import com.ftprx.server.channel.Command;
+public class AccountInsertException extends Throwable {
+    // Message for trying insert account that already exists
+    public static final String ACCOUNT_ALREADY_EXISTS = "Account with the specified username already exists";
 
-public class PrintWorkingDirectoryCommand extends SimpleCommand {
-
-    @Override
-    public void execute(Command command, Client client) {
-        String dir = client.getWorkingDirectory();
-        if (dir != null)
-        client.sendReply(257, dir);
+    public AccountInsertException(String message) {
+        super(message);
     }
 }

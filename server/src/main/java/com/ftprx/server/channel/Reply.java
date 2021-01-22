@@ -1,9 +1,26 @@
+/*
+ * Copyright 2019, FtpRx Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ftprx.server.channel;
 
 import com.ftprx.server.util.ControlCharacters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * A reply is an acknowledgment (positive or negative) sent from
@@ -22,7 +39,7 @@ public class Reply {
     private final String text;
 
     public Reply(@Nonnull String code, @Nullable String text) {
-        this.code = code;
+        this.code = Objects.requireNonNull(code, "Code should not be null");
         this.text = text;
     }
 
@@ -38,29 +55,4 @@ public class Reply {
     public String toString() {
         return code + ControlCharacters.SP + text + ControlCharacters.CRLF;
     }
-//    public static final class ReplyBuilder {
-//        private String code;
-//        private String text;
-//
-//        private ReplyBuilder() {
-//        }
-//
-//        public static ReplyBuilder aReply() {
-//            return new ReplyBuilder();
-//        }
-//
-//        public ReplyBuilder withCode(String code) {
-//            this.code = code;
-//            return this;
-//        }
-//
-//        public ReplyBuilder withText(String text) {
-//            this.text = text;
-//            return this;
-//        }
-//
-//        public Reply build() {
-//            return new Reply(code, text);
-//        }
-//    }
 }

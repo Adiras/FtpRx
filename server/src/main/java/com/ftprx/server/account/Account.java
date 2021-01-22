@@ -1,31 +1,74 @@
+/*
+ * Copyright 2019, FtpRx Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ftprx.server.account;
 
-import java.util.UUID;
+import org.tinylog.Logger;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import static com.ftprx.server.account.AccountCreateException.WRONG_USERNAME_LENGTH;
 
 public class Account {
+
     private String username;
     private String homeDirectory;
-    private String password;
+    private String hashedPassword;
 
     public Account() {
     }
 
-    public Account(String username, String homeDirectory, String password) {
-        this.username = username;
+    public Account(String username, String homeDirectory, String plainPassword) throws AccountCreateException {
+        this.username = validateUsername(username);
         this.homeDirectory = homeDirectory;
-        this.password = password;
+        if (plainPassword != null) {
+            this.hashedPassword = generateHash(plainPassword);
+        }
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    private String validateUsername(String username) throws AccountCreateException {
+        if (username.length() == 0) {
+            throw new AccountCreateException(WRONG_USERNAME_LENGTH);
+        }
+        return username;
     }
 
-    public void setHomeDirectory(String homeDirectory) {
-        this.homeDirectory = homeDirectory;
+    public boolean verifyPassword(String password) {
+        return hashedPassword.equals(generateHash(password));
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public boolean isPasswordRequired() {
+        return hashedPassword != null;
+    }
+
+    private String generateHash(String input) {
+        StringBuilder hash = new StringBuilder();
+        try {
+            MessageDigest sha = MessageDigest.getInstance("SHA-1");
+            byte[] hashedBytes = sha.digest(input.getBytes());
+            char[] digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+            for (byte b : hashedBytes) {
+                hash.append(digits[(b & 0xf0) >> 4]);
+                hash.append(digits[b & 0x0f]);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Logger.error(e.getMessage());
+        }
+        return hash.toString();
     }
 
     public String getUsername() {
@@ -34,10 +77,6 @@ public class Account {
 
     public String getHomeDirectory() {
         return homeDirectory;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     @Override

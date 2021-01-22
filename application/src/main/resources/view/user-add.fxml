@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="268.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ftprx.application.controller.UserAddController">
+   <children>
+      <PasswordField fx:id="password" focusTraversable="false" layoutX="155.0" layoutY="111.0" />
+      <Button focusTraversable="false" layoutX="29.0" layoutY="221.0" mnemonicParsing="false" onAction="#onCreateButtonClick" prefHeight="26.0" prefWidth="84.0" text="Create" />
+      <Label layoutX="29.0" layoutY="71.0" text="Username" />
+      <Label layoutX="29.0" layoutY="115.0" text="Password" />
+      <Label layoutX="29.0" layoutY="159.0" text="Home Directory" />
+      <TextField fx:id="homeDirectory" focusTraversable="false" layoutX="155.0" layoutY="155.0" />
+      <Button focusTraversable="false" layoutX="316.0" layoutY="155.0" mnemonicParsing="false" onAction="#onBrowseButtonClick" text="Browse" />
+      <TextField fx:id="username" focusTraversable="false" layoutX="155.0" layoutY="67.0" />
+      <Label layoutX="71.0" layoutY="25.0" prefHeight="22.0" prefWidth="126.0" text="Create new user" textFill="#929292">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Separator layoutX="21.0" layoutY="200.0" prefHeight="0.0" prefWidth="351.0" />
+      <ImageView fitHeight="26.0" fitWidth="31.0" layoutX="29.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../image/male.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="125.0" layoutY="221.0" mnemonicParsing="false" onAction="#onCancelButtonClick" prefHeight="26.0" prefWidth="84.0" text="Cancel" />
+   </children>
+</AnchorPane>

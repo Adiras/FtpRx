@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.ftprx.server.repository;
+package com.ftprx.server.account;
 
-import com.ftprx.server.account.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -31,18 +30,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ftprx.server.account.AccountInsertException.ACCOUNT_ALREADY_EXISTS;
 import static java.nio.file.Files.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
+import static org.tinylog.Logger.debug;
+import static org.tinylog.Logger.error;
 
 public class FileAccountRepository implements ObservableAccountRepository {
 
     private final Gson gson;
-    private final Path repositoryFile;
+    private final Path accountsFile;
     private final Set<AccountRepositoryChangeListener> listeners;
 
     public FileAccountRepository(String filename) {
-        this.repositoryFile = Paths.get(filename);
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+        this.accountsFile = Paths.get(filename);
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
 
         listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -58,7 +60,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void update(@Nonnull Account account) {
-        Objects.requireNonNull(account, "Account should not be null");
+        requireNonNull(account, "Account should not be null");
     }
 
     @Override
@@ -77,7 +79,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void insert(@Nonnull Account account) throws AccountInsertException {
-        Objects.requireNonNull(account, "Account should not be null");
+        requireNonNull(account, "Account should not be null");
         if (isAccountExists(account)) {
             throw new AccountInsertException(ACCOUNT_ALREADY_EXISTS);
         }
@@ -99,7 +101,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void delete(@Nonnull Account account) {
-        Objects.requireNonNull(account, "Account should not be null");
+        requireNonNull(account, "Account should not be null");
         delete(account.getUsername());
         notifyDeleteAccount(account);
     }
@@ -120,32 +122,32 @@ public class FileAccountRepository implements ObservableAccountRepository {
         saveFile(toSave);
     }
 
-    private void createRepositoryFileIfNotExists() {
-        if (!exists(repositoryFile)) {
-            Logger.debug("Account file not found!");
+    private void createAccountsFileIfNotExists() {
+        if (!exists(accountsFile)) {
+            debug("Account file not found!");
             try {
-                createFile(repositoryFile);
+                createFile(accountsFile);
             } catch (Exception e) {
-                Logger.error(e.getMessage());
+                error(e.getMessage());
             }
         }
     }
 
     private void saveFile(List<Account> accounts) {
-        createRepositoryFileIfNotExists();
-        try (Writer writer = newBufferedWriter(repositoryFile)) {
+        createAccountsFileIfNotExists();
+        try (Writer writer = newBufferedWriter(accountsFile)) {
             gson.toJson(accounts, writer);
         } catch (Exception e) {
-            Logger.error(e.getMessage());
+            error(e.getMessage());
         }
     }
 
     public List<Account> readFile() {
-        createRepositoryFileIfNotExists();
-        try (Reader reader = newBufferedReader(repositoryFile)) {
-            return Arrays.asList(gson.fromJson(reader, Account[].class));
+        createAccountsFileIfNotExists();
+        try (Reader reader = newBufferedReader(accountsFile)) {
+            return asList(gson.fromJson(reader, Account[].class));
         } catch (Exception e) {
-            return Collections.emptyList();
+            return emptyList();
         }
     }
 
