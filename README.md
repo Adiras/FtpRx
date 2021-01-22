@@ -9,15 +9,34 @@
 - **[RFC 2428](https://tools.ietf.org/html/rfc2428) - FTP Extensions for IPv6 and NATs** *(not implemented)*
 - **[RFC 697](https://tools.ietf.org/html/rfc697) - CWD Command of FTP** *(not implemented)*
 
-## Build
-
-To build:
+## Running and Debugging
+Running project if very simple, just open up your shell/terminal and enter the following command in root project directory.
 
 ```
-$ git clone https://github.com/Adiras/FtpRx
-$ cd FtpRx/
-$ ./gradlew build
+$ ./gradlew application:run
 ```
+
+## Contributing
+If you want to submit code back to the project, please take a moment to review over the guidelines below.
+
+### Code Style
+FtpRx stands by the usual java style, but we don't have an official coding standard.
+
+**Please do not do any of the following:**
+* Underscores in identifiers
+* Hungarian notation
+* Prefixes for fields or arguments
+* Curly braces on new lines
+
+**A few additional notes to keep in mind:**
+* When creating a new file, make sure to add the Apache file header, as you can see [here](https://opensource.org/licenses/Apache-2.0)
+* If you create a new class, please add documentation that explains the usage and scope of the class. You don't have to add javadocs for methods that are self explanatory.
+
+### Size of code changes
+To reduce the chances of introducing errant behavior, and to increase the chance that your pull request gets merged, we ask you to keep the requests small and focused.
+* Submit a pull request dedicated to solving one issue/feature.
+* Keep the code changes as small as possible, its very unlikely that huge change sets of files will be merged
+
 
 ## Bugs and Feedback
 
