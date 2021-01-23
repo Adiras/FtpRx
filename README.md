@@ -2,7 +2,6 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Specification Support
-
 - **[RFC 959](https://tools.ietf.org/html/rfc959) - File Transfer Protocol** *(partially implemented)*
 - **[RFC 373](https://tools.ietf.org/html/rfc373) - FTP Extension: XSEN** *(not implemented)*
 - **[RFC 2228](https://tools.ietf.org/html/rfc2228) - FTP Security Extensions** *(not implemented)*
@@ -37,23 +36,8 @@ To reduce the chances of introducing errant behavior, and to increase the chance
 * Submit a pull request dedicated to solving one issue/feature.
 * Keep the code changes as small as possible, its very unlikely that huge change sets of files will be merged
 
-
-## Bugs and Feedback
-
-For bugs, questions and discussions please use the [Github Issues](https://github.com/Adiras/FtpRx/issues).
+## Found a bug? Missing a specific feature?
+For bugs, questions and discussions please use the Github Issues. If you already found a solution to your problem, we would love to review your pull request! Have a look at our **Contributing** section to find out about our coding standards.
 
 ## License
-
-    Copyright 2019, FtpRx Contributors
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+FtpRx is licensed under the [Apache License 2.0](LICENSE).
