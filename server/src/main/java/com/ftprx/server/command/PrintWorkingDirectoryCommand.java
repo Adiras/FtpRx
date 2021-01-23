@@ -24,7 +24,8 @@ public class PrintWorkingDirectoryCommand extends SimpleCommand {
     @Override
     public void execute(Command command, Client client) {
         String dir = client.getWorkingDirectory();
-        if (dir != null)
-        client.sendReply(257, dir);
+        if (dir != null) {
+            client.sendReply(257, dir);
+        }
     }
 }

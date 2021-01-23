@@ -16,6 +16,7 @@
 
 package com.ftprx.server.account;
 
+import com.ftprx.server.security.PasswordEncoder;
 import org.tinylog.Logger;
 
 import java.security.MessageDigest;
@@ -30,13 +31,14 @@ public class Account {
     private String hashedPassword;
 
     public Account() {
+        // Empty constructor for serialization purpose
     }
 
     public Account(String username, String homeDirectory, String plainPassword) throws AccountCreateException {
         this.username = validateUsername(username);
         this.homeDirectory = homeDirectory;
         if (plainPassword != null) {
-            this.hashedPassword = generateHash(plainPassword);
+            this.hashedPassword = PasswordEncoder.encode(plainPassword);
         }
     }
 
@@ -48,27 +50,11 @@ public class Account {
     }
 
     public boolean verifyPassword(String password) {
-        return hashedPassword.equals(generateHash(password));
+        return PasswordEncoder.matches(password, hashedPassword);
     }
 
     public boolean isPasswordRequired() {
         return hashedPassword != null;
-    }
-
-    private String generateHash(String input) {
-        StringBuilder hash = new StringBuilder();
-        try {
-            MessageDigest sha = MessageDigest.getInstance("SHA-1");
-            byte[] hashedBytes = sha.digest(input.getBytes());
-            char[] digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-            for (byte b : hashedBytes) {
-                hash.append(digits[(b & 0xf0) >> 4]);
-                hash.append(digits[b & 0x0f]);
-            }
-        } catch (NoSuchAlgorithmException e) {
-            Logger.error(e.getMessage());
-        }
-        return hash.toString();
     }
 
     public String getUsername() {

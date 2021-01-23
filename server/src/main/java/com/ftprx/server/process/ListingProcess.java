@@ -17,7 +17,6 @@
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
-import com.ftprx.server.util.ControlCharacters;
 import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
@@ -25,38 +24,29 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static java.util.Objects.requireNonNull;
+import java.util.Objects;
 
 public class ListingProcess extends DataTransferProcess {
 
     private final String pathname;
 
     public ListingProcess(@Nonnull Client client, @Nullable String pathname) {
-        super(requireNonNull(client));
+        super(Objects.requireNonNull(client));
         this.pathname = pathname;
     }
 
     @Override
     public void perform() {
-        // Try-Catch block to handle exceptions
         try {
             PrintWriter writer = new PrintWriter(client.getDataConnection().getOutputStream());
-
-            // Creates a new File instance by converting the given
-            // pathname string into an abstract pathname
+            // Creates a new File instance by converting
+            // the given pathname string into an abstract pathname
             String[] files = new File(pathname == null ? client.getWorkingDirectory() : pathname).list();
-//            for (String file : files) {
-//                writer.println(new String(file.getBytes(), StandardCharsets.ISO_8859_1));
-//                System.out.println(file);
-//            }
+            for (String file : files) {
+                writer.println(new String(file.getBytes(), StandardCharsets.ISO_8859_1));
+            }
             writer.flush();
-
             client.sendReply(226, "Directory send OK.");
         } catch (IOException e) {
             Logger.error(e.getMessage());

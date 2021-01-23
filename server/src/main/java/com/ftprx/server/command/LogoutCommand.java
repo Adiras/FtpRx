@@ -21,6 +21,18 @@ import com.ftprx.server.channel.Command;
 
 import java.io.IOException;
 
+/**
+ * This command terminates a user and if file transfer is not
+ * in progress, the server closes the control connection.
+ * If file transfer is in progress, the connection will remain
+ * open for result response and the server will then close it.
+ * If the user-process is transferring files for several users
+ * but does not wish to close and then reopen connections for
+ * each, then the REIN command should be used instead of QUIT.
+ * An unexpected close on the control connection will cause the
+ * server to take the effective action of an abort (ABOR)
+ * and a logout (QUIT).
+ */
 public class LogoutCommand extends SimpleCommand {
 
     @Override

@@ -16,13 +16,34 @@
 
 package com.ftprx.server.security;
 
+import org.tinylog.Logger;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class PasswordEncoder {
 
-//    public String encode(CharSequence rawPassword) {
-//
-//    }
-//
-//    public boolean matches(CharSequence rawPassword, String encodedPassword) {
-//
-//    }
+    public static String encode(String plainPassword) {
+        return generateHash(plainPassword);
+    }
+
+    public static boolean matches(String plainPassword, String encodedPassword) {
+        return encodedPassword.equals(generateHash(plainPassword));
+    }
+
+    private static String generateHash(String input) {
+        StringBuilder hash = new StringBuilder();
+        try {
+            MessageDigest sha = MessageDigest.getInstance("SHA-1");
+            byte[] hashedBytes = sha.digest(input.getBytes());
+            char[] digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+            for (byte b : hashedBytes) {
+                hash.append(digits[(b & 0xf0) >> 4]);
+                hash.append(digits[b & 0x0f]);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Logger.error(e.getMessage());
+        }
+        return hash.toString();
+    }
 }

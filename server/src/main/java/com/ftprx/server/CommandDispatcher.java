@@ -21,7 +21,7 @@ import com.ftprx.server.channel.Command;
 
 import javax.annotation.Nonnull;
 
-import static java.util.Objects.requireNonNull;
+import java.util.Objects;
 
 public class CommandDispatcher {
     private final CommandLookupTable commandLookupTable;
@@ -32,7 +32,7 @@ public class CommandDispatcher {
      * @param client the client that is assigned for this dispatcher.
      */
     public CommandDispatcher(@Nonnull Client client) {
-        this.client = requireNonNull(client, "Client should not be null");
+        this.client = Objects.requireNonNull(client, "Client should not be null");
         this.commandLookupTable = CommandLookupTable.bootstrap();
     }
 
@@ -58,10 +58,6 @@ public class CommandDispatcher {
 //                }
 //            }
 //        }
-    }
-
-    public void onExecuteWithoutDependCommand(Command command, Client client) {
-        client.sendReply(503, "Bad sequence of commands.");
     }
 
     public void onExecuteUnknownCommand(Command command, Client client) {
