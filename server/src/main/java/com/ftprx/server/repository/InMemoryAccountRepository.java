@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryAccountRepository implements AccountRepository {
-
     private List<Account> accounts = new ArrayList<>();
 
     public InMemoryAccountRepository() {

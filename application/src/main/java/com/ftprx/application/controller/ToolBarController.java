@@ -74,7 +74,7 @@ public class ToolBarController {
             Stage stage = new Stage();
             controller.setStage(stage);
             stage.setOnCloseRequest(event -> controller.onCloseRequest());
-            stage.setScene(new Scene(root, 600, 500));
+            stage.setScene(new Scene(root, 600, 370));
             stage.setTitle("User Manager");
             stage.setResizable(false);
             stage.show();

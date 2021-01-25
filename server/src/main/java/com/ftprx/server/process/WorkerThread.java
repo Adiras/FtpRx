@@ -25,9 +25,8 @@ import org.tinylog.Logger;
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import static java.util.Objects.requireNonNull;
 
 public class WorkerThread implements Runnable {
     private final Client client;
@@ -35,7 +34,7 @@ public class WorkerThread implements Runnable {
     private final CommandDispatcher dispatcher;
 
     public WorkerThread(@Nonnull Client client) {
-        this.client = requireNonNull(client);
+        this.client = Objects.requireNonNull(client);
         this.connection = client.getControlConnection();
         this.dispatcher = new CommandDispatcher(client);
     }
@@ -53,13 +52,13 @@ public class WorkerThread implements Runnable {
                 Reply reply;
                 while ((reply = replyBuffer.poll()) != null) {
                     writer.write(reply.toString());
-                    Logger.debug("Server -> '{} {}'", reply.getCode(), reply.getText());
+                    Logger.debug("--> '{} {}'", reply.getCode(), reply.getText());
                 }
                 writer.flush();
 
                 String line;
                 while (reader.ready() && (line = reader.readLine()) != null) {
-                    Logger.debug("Server <- '{}'", line);
+                    Logger.debug("<-- '{}'", line);
                     client.receiveCommand(Command.valueOf(line));
                 }
 
@@ -69,13 +68,13 @@ public class WorkerThread implements Runnable {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
         } finally {
             Logger.debug("Closing control connection");
             try {
                 client.closeControlConnection();
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.error(e.getMessage());
             }
         }
     }

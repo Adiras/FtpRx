@@ -69,7 +69,7 @@ public class UserManagerController implements AccountRepositoryChangeListener {
             Parent root = loader.load();
             UserAddController controller = loader.getController();
             Stage stage = new Stage();
-            stage.setScene(new Scene(root, 400, 300));
+            stage.setScene(new Scene(root, 390, 260));
             stage.setTitle("New user");
             stage.setResizable(false);
             controller.setStage(stage);

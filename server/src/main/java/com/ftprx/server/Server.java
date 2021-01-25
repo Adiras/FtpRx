@@ -16,25 +16,20 @@
 
 package com.ftprx.server;
 
-import com.ftprx.server.account.AccountRepository;
 import com.ftprx.server.account.ObservableAccountRepository;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.repository.FileAccountRepository;
-import com.ftprx.server.repository.InMemoryAccountRepository;
 import com.ftprx.server.thread.ListenerThread;
 import com.ftprx.server.thread.ThreadManager;
 import com.ftprx.server.util.SocketHelper;
-import com.google.inject.internal.cglib.core.$MethodWrapper;
 import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
 import java.net.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
 
 /**
  * The server protocol interpreter listens on specified port
@@ -43,7 +38,6 @@ import java.util.concurrent.Executors;
  * and manages the server data transfer process.
  */
 public class Server {
-
     private static final int PORT = 21;
     private static final int SO_TIMEOUT = 3000;
     private static final String HOSTNAME = "127.0.0.1";
@@ -92,7 +86,7 @@ public class Server {
                 server.close();
             }
         } catch (Exception e) {
-            Logger.error(e);
+            Logger.error(e.getMessage());
         }
         if (listenerThread != null && listenerThread.isAlive()) {
             listenerThread.interrupt();
@@ -156,7 +150,7 @@ public class Server {
             try {
                 client.closeControlConnection();
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.error(e.getMessage());
             }
         }
     }

@@ -33,7 +33,6 @@ import static com.ftprx.server.account.AccountInsertException.ACCOUNT_ALREADY_EX
 import static java.nio.file.Files.*;
 
 public class FileAccountRepository implements ObservableAccountRepository {
-
     private final Gson gson;
     private final Path repositoryFile;
     private final Set<AccountRepositoryChangeListener> listeners;

@@ -18,6 +18,7 @@ package com.ftprx.server.account;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,12 +33,8 @@ import static com.ftprx.server.account.AccountInsertException.ACCOUNT_ALREADY_EX
 import static java.nio.file.Files.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
-import static org.tinylog.Logger.debug;
-import static org.tinylog.Logger.error;
 
 public class FileAccountRepository implements ObservableAccountRepository {
-
     private final Gson gson;
     private final Path accountsFile;
     private final Set<AccountRepositoryChangeListener> listeners;
@@ -53,14 +50,12 @@ public class FileAccountRepository implements ObservableAccountRepository {
             insert(new Account("admin", "test", "dir"));
             insert(new Account("admin2", "test", "dir"));
             insert(new Account("admin3", "test", "dir"));
-        } catch (AccountInsertException ignore) {} catch (AccountCreateException e) {
-            e.printStackTrace();
-        }
+        } catch (AccountInsertException | AccountCreateException ignore) {}
     }
 
     @Override
     public void update(@Nonnull Account account) {
-        requireNonNull(account, "Account should not be null");
+        Objects.requireNonNull(account, "Account should not be null");
     }
 
     @Override
@@ -79,7 +74,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void insert(@Nonnull Account account) throws AccountInsertException {
-        requireNonNull(account, "Account should not be null");
+        Objects.requireNonNull(account, "Account should not be null");
         if (isAccountExists(account)) {
             throw new AccountInsertException(ACCOUNT_ALREADY_EXISTS);
         }
@@ -101,7 +96,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void delete(@Nonnull Account account) {
-        requireNonNull(account, "Account should not be null");
+        Objects.requireNonNull(account, "Account should not be null");
         delete(account.getUsername());
         notifyDeleteAccount(account);
     }
@@ -124,11 +119,11 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     private void createAccountsFileIfNotExists() {
         if (!exists(accountsFile)) {
-            debug("Account file not found!");
+            Logger.debug("Account file not found!");
             try {
                 createFile(accountsFile);
             } catch (Exception e) {
-                error(e.getMessage());
+                Logger.error(e.getMessage());
             }
         }
     }
@@ -138,7 +133,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
         try (Writer writer = newBufferedWriter(accountsFile)) {
             gson.toJson(accounts, writer);
         } catch (Exception e) {
-            error(e.getMessage());
+            Logger.error(e.getMessage());
         }
     }
 

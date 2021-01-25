@@ -17,6 +17,7 @@
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
+import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -66,7 +67,7 @@ public abstract class DataTransferProcess implements Runnable {
         try {
             client.closeDataConnection();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
         }
     }
 
@@ -74,7 +75,7 @@ public abstract class DataTransferProcess implements Runnable {
         try {
             TimeUnit.MILLISECONDS.sleep(CONNECTION_TIMEOUT);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
         }
     }
 }

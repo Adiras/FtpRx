@@ -26,11 +26,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.Objects.requireNonNull;
 
 public class ListenerThread extends Thread {
     private static final String THREAD_NAME = "Protocol Interpreter Listening Thread";
@@ -38,21 +37,20 @@ public class ListenerThread extends Thread {
     private final ServerSocket server;
 
     public ListenerThread(@Nonnull ServerSocket server) {
-        this.server = requireNonNull(server, "Server should not be null");
+        this.server = Objects.requireNonNull(server, "Server should not be null");
         this.observers = Collections.newSetFromMap(new ConcurrentHashMap<>());
         setName(THREAD_NAME);
     }
 
     @Override
     public void run() {
-        Logger.info("Listening for connections on por " + server.getLocalPort());
+        Logger.info("Listening for connections on port {}", server.getLocalPort());
         while (!Thread.currentThread().isInterrupted()) {
             if (SocketHelper.isServerSocketOpen(server)) {
                 try {
                     Socket client = server.accept();
                     notifyObservers(client);
                 } catch (SocketTimeoutException ignore) {
-                    /* Do nothing */
                 } catch (IOException e) {
                     Logger.error("Error while waiting for client: {}", e.getMessage());
                 }
@@ -69,8 +67,8 @@ public class ListenerThread extends Thread {
     }
 
     private void notifyObservers(@Nonnull Socket client) {
-        observers.forEach(observer -> {
+        for (ClientConnectObserver observer : observers) {
             observer.onClientConnected(client);
-        });
+        }
     }
 }

@@ -19,13 +19,13 @@ package com.ftprx.server.account;
 import com.ftprx.server.security.PasswordEncoder;
 import org.tinylog.Logger;
 
+import javax.annotation.Nullable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import static com.ftprx.server.account.AccountCreateException.WRONG_USERNAME_LENGTH;
 
 public class Account {
-
     private String username;
     private String homeDirectory;
     private String hashedPassword;
@@ -37,8 +37,11 @@ public class Account {
     public Account(String username, String homeDirectory, String plainPassword) throws AccountCreateException {
         this.username = validateUsername(username);
         this.homeDirectory = homeDirectory;
+        if (plainPassword.isEmpty() || plainPassword.isBlank()) {
+            plainPassword = null;
+        }
         if (plainPassword != null) {
-            this.hashedPassword = PasswordEncoder.encode(plainPassword);
+            hashedPassword = PasswordEncoder.encode(plainPassword);
         }
     }
 
@@ -49,7 +52,10 @@ public class Account {
         return username;
     }
 
-    public boolean verifyPassword(String password) {
+    public boolean verifyPassword(@Nullable String password) {
+        if (password == null) {
+            return !isPasswordRequired();
+        }
         return PasswordEncoder.matches(password, hashedPassword);
     }
 

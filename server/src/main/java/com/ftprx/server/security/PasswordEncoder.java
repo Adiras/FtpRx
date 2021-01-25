@@ -18,10 +18,12 @@ package com.ftprx.server.security;
 
 import org.tinylog.Logger;
 
+import javax.annotation.Nonnull;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class PasswordEncoder {
+    private static final String ALGORITHM = "SHA-1";
 
     public static String encode(String plainPassword) {
         return generateHash(plainPassword);
@@ -31,10 +33,10 @@ public class PasswordEncoder {
         return encodedPassword.equals(generateHash(plainPassword));
     }
 
-    private static String generateHash(String input) {
+    private static String generateHash(@Nonnull String input) {
         StringBuilder hash = new StringBuilder();
         try {
-            MessageDigest sha = MessageDigest.getInstance("SHA-1");
+            MessageDigest sha = MessageDigest.getInstance(ALGORITHM);
             byte[] hashedBytes = sha.digest(input.getBytes());
             char[] digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
             for (byte b : hashedBytes) {
