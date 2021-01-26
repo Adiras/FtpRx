@@ -3,10 +3,6 @@
 
 ## Specification Support
 - **[RFC 959](https://tools.ietf.org/html/rfc959) - File Transfer Protocol** *(partially implemented)*
-- **[RFC 373](https://tools.ietf.org/html/rfc373) - FTP Extension: XSEN** *(not implemented)*
-- **[RFC 2228](https://tools.ietf.org/html/rfc2228) - FTP Security Extensions** *(not implemented)*
-- **[RFC 2428](https://tools.ietf.org/html/rfc2428) - FTP Extensions for IPv6 and NATs** *(not implemented)*
-- **[RFC 697](https://tools.ietf.org/html/rfc697) - CWD Command of FTP** *(not implemented)*
 
 ## Running and Debugging
 Running project if very simple, just open up your shell/terminal and enter the following command in root project directory.
