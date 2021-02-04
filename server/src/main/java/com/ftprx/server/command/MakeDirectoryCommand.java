@@ -20,8 +20,10 @@ import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 import org.tinylog.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /*
@@ -34,16 +36,26 @@ public class MakeDirectoryCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        final String pathname = command.getArgument();
-        if (pathname == null || pathname.equals("")) {
-            client.sendReply(501, "Syntax error in parameters or arguments.");
-        } else {
-            try {
-                Files.createDirectory(Paths.get(pathname));
-                client.sendReply(257, "Directory created " + pathname);
-            } catch (IOException e) {
-                Logger.error(e.getMessage());
+        final var pathname = command.getArgument();
+        if (pathname.isEmpty()) {
+            client.sendReply(501, "No specified pathname.");
+            return;
+        }
+        try {
+            var directory = client.getRemotePath(pathname).toFile();
+            if (directory.exists()) {
+                client.sendReply(521, directory + "directory already exists");
+                return;
             }
+            Files.exists(Paths.get("sdf"));
+            Files.createDirectory(directory.toPath());
+            // upon successful completion of an MKD command,
+            // the server should return a line of the form:
+            // 257<space>"<directory-name>"<space><commentary>
+            client.sendReply(257, directory + "directory created");
+        } catch (IOException e) {
+            Logger.error(e.getMessage());
+            client.sendReply(550, "Requested action not taken, file unavailable.");
         }
     }
 }

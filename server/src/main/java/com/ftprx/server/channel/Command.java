@@ -17,6 +17,7 @@
 package com.ftprx.server.channel;
 
 import com.ftprx.server.CommandCode;
+import com.ftprx.server.util.ControlCharacters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,8 +55,8 @@ public class Command {
         return code;
     }
 
-    public @Nullable String getArgument() {
-        return argument;
+    public @Nonnull String getArgument() {
+        return argument == null ? ControlCharacters.EMPTY : argument;
     }
 
     public boolean hasArgument() {

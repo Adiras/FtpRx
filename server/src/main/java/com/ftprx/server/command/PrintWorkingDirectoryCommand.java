@@ -19,6 +19,8 @@ package com.ftprx.server.command;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
+import java.nio.file.Path;
+
 /**
  * This command causes the name of the current working directory to be returned in the reply.
  */
@@ -26,9 +28,9 @@ public class PrintWorkingDirectoryCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        String dir = client.getWorkingDirectory();
-        if (dir != null) {
-            client.sendReply(257, dir);
+        Path directory = client.getWorkingDirectory();
+        if (directory != null) {
+            client.sendReply(257, directory.toAbsolutePath().toString());
         }
     }
 }

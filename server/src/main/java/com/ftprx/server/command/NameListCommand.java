@@ -21,6 +21,8 @@ import com.ftprx.server.channel.Command;
 import com.ftprx.server.process.ListingProcess;
 import com.ftprx.server.thread.ThreadManager;
 
+import java.io.File;
+
 /**
  * This command causes a directory listing to be sent from
  * server to user.  The pathname should specify a
@@ -39,7 +41,11 @@ public class NameListCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
+        var pathname = command.getArgument();
+        File directory = pathname.isEmpty()
+                ? client.getWorkingDirectory().toFile()
+                : client.getRemotePath(pathname).toFile();
         client.sendReply(150, "Here comes the directory listing.");
-        ThreadManager.launchDataTransferProcess(new ListingProcess(client, "null"));
+        ThreadManager.launchDataTransferProcess(new ListingProcess(client, directory));
     }
 }

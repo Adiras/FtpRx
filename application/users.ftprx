@@ -1,29 +1,11 @@
 [
   {
-    "username": "admin3",
-    "homeDirectory": "test",
-    "hashedPassword": "7ee737c83ee689c96ef37d3a029068c390ebc8f8"
-  },
-  {
-    "username": "test",
-    "homeDirectory": "asd"
+    "username": "test2",
+    "homeDirectory": "C:\\Users\\wkacp\\Desktop"
   },
   {
     "username": "admin",
-    "homeDirectory": "test",
-    "hashedPassword": "7ee737c83ee689c96ef37d3a029068c390ebc8f8"
-  },
-  {
-    "username": "admin2",
-    "homeDirectory": "test",
-    "hashedPassword": "7ee737c83ee689c96ef37d3a029068c390ebc8f8"
-  },
-  {
-    "username": "max",
-    "homeDirectory": "C:\\Users\\wkacp\\Desktop"
-  },
-  {
-    "username": "test2",
-    "homeDirectory": "C:\\Users\\wkacp\\Desktop"
+    "homeDirectory": "C:\\Users\\wkacp\\Desktop\\home",
+    "hashedPassword": "d033e22ae348aeb5660fc2140aec35850c4da997"
   }
 ]

@@ -18,6 +18,10 @@ package com.ftprx.server.command;
 
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
+import com.ftprx.server.channel.WorkingDirectoryChangeException;
+
+import java.io.File;
+import java.util.logging.Logger;
 
 /*
  * This command allows the user to work with a different
@@ -31,13 +35,16 @@ public class ChangeWorkingDirectoryCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        final String pathname = command.getArgument();
-        if (pathname == null || pathname.equals("")) {
-            client.sendReply(200, "Directory changed to " + pathname); // bug in mozilla ftp
-//            client.sendReply(501, "Syntax error in parameters or arguments.");
-        } else {
-            client.changeWorkingDirectory(pathname);
-            client.sendReply(200, "Directory changed to " + pathname);
+        final var pathname = command.getArgument();
+        if (pathname.isEmpty()) {
+            client.sendReply(501, "Syntax error in parameters or arguments."); // bug in mozilla ftp
+            return;
+        }
+        try {
+            client.changeWorkingDirectory(client.getRemotePath(pathname));
+            client.sendReply(200, "Directory changed to " + client.getWorkingDirectory());
+        } catch (WorkingDirectoryChangeException e) {
+            client.sendReply(431, e.getMessage());
         }
     }
 }

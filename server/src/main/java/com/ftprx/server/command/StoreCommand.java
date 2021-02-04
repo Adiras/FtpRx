@@ -18,18 +18,28 @@ package com.ftprx.server.command;
 
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
-import com.ftprx.server.process.DownloadFileProcess;
+import com.ftprx.server.process.UploadFileProcess;
 import com.ftprx.server.thread.ThreadManager;
 
+/**
+ * This command causes the server-DTP to accept the data
+ * transferred via the data connection and to store the data as
+ * a file at the server site. If the file specified in the
+ * pathname exists at the server site, then its contents shall
+ * be replaced by the data being transferred. A new file is
+ * created at the server site if the file specified in the
+ * pathname does not already exist.
+ */
 public class StoreCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
         final String pathname = command.getArgument();
-        if (pathname == null || pathname.equals("")) {
+        if (pathname.isEmpty()) {
             client.sendReply(553, "Could not create file.");
             return;
         }
-        ThreadManager.launchDataTransferProcess(new DownloadFileProcess(client, pathname));
+        var file = client.getRemotePath(pathname).toFile();
+        ThreadManager.launchDataTransferProcess(new UploadFileProcess(client, file));
     }
 }

@@ -40,8 +40,8 @@ public class UsernameCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        final String username = command.getArgument();
-        if (username == null) {
+        final var username = command.getArgument();
+        if (username.isEmpty()) {
             client.sendReply(530, "Need parameter");
             return;
         }

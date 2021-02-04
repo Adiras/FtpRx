@@ -53,6 +53,7 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
             registerCommand(NOOP, NoopCommand::new);
             registerCommand(LIST, ListCommand::new);
             registerCommand(RETR, RetrieveCommand::new);
+            registerCommand(DELE, DeleteCommand::new);
         }};
     }
 

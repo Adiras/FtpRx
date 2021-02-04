@@ -8,34 +8,31 @@ import java.io.*;
 import java.util.Objects;
 
 public class DownloadFileProcess extends DataTransferProcess {
-    private final String pathname;
+    private final File file;
 
-    public DownloadFileProcess(@Nonnull Client client, @Nonnull String pathname) {
+    public DownloadFileProcess(@Nonnull Client client, @Nonnull File file) {
         super(client);
-        this.pathname = Objects.requireNonNull(pathname, "Pathname should not be null");
+        this.file = Objects.requireNonNull(file, "File should not be null");
     }
 
     @Override
     public void perform() {
-        File file = new File(client.getWorkingDirectory() + File.separator + pathname);
         try {
-            file.createNewFile();
             client.sendReply(150, "Ok to send data.");
-            download(file);
+            copyFileToOutputStream(file, client.getDataConnection().getOutputStream());
             client.sendReply(226, "Transfer complete.");
         } catch (IOException e) {
             Logger.error(e.getMessage());
         }
     }
 
-    private void download(File file) throws IOException {
-        InputStream input = client.getDataConnection().getInputStream();
-        InputStreamReader reader = new InputStreamReader(input);
-        FileWriter writer = new FileWriter(file);
+    private void copyFileToOutputStream(File file, OutputStream output) throws IOException {
+        FileInputStream input = new FileInputStream(file);
         int data;
-        while ((data = reader.read()) != -1) {
-            writer.append((char) data);
+        while ((data = input.read()) != -1) {
+            output.write(data);
         }
-        writer.flush();
+        output.flush();
+        output.close();
     }
 }

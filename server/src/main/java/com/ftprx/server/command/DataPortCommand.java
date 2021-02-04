@@ -44,7 +44,12 @@ public class DataPortCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        final String hostPort = command.getArgument(); // "192,168,1,105,223,91"
+        final var hostPort = command.getArgument(); // "192,168,1,105,223,91"
+        if (hostPort.isEmpty()) {
+            client.sendReply(501, "Syntax error in parameters or arguments.");
+            return;
+        }
+
         final String[] fields = hostPort.split(","); // ["192","168","1","105","223","91"]
         client.openDataConnection(new ActiveConnectionMode(payloadHostname(fields), payloadPort(fields)));
         client.sendReply(200, "PORT command successful.");

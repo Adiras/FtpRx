@@ -21,6 +21,8 @@ import com.ftprx.server.channel.Command;
 import com.ftprx.server.process.ListingProcess;
 import com.ftprx.server.thread.ThreadManager;
 
+import java.io.File;
+
 /**
  *  This command causes a list to be sent from the server to the
  *  passive DTP. If the pathname specifies a directory or other
@@ -39,11 +41,11 @@ public class ListCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        String pathname = command.getArgument();
-        if (pathname == null) {
-            pathname = client.getWorkingDirectory();
-        }
+        var pathname = command.getArgument();
+        File directory = pathname.isEmpty()
+                ? client.getWorkingDirectory().toFile()
+                : client.getRemotePath(pathname).toFile();
         client.sendReply(150, "Here comes the directory listing.");
-        ThreadManager.launchDataTransferProcess(new ListingProcess(client, pathname));
+        ThreadManager.launchDataTransferProcess(new ListingProcess(client, directory));
     }
 }

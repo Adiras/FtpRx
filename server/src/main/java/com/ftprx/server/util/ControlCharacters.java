@@ -20,5 +20,11 @@ package com.ftprx.server.util;
  * Class containing predefined values for control characters used by Telnet connection.
  */
 public class ControlCharacters {
-    public static final String SP = " ", CRLF = "\r\n";
+    public static final String
+            // A String for a space character.
+            SP = " ",
+            // A String for a carriage return with linefeed.
+            CRLF = "\r\n",
+            // The empty String.
+            EMPTY = "";
 }

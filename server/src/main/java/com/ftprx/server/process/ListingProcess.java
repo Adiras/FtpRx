@@ -26,27 +26,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 public class ListingProcess extends DataTransferProcess {
     private static final Charset MESSAGE_CHARSET = StandardCharsets.ISO_8859_1;
     private DirectoryListFormat format = new DosDirectoryListFormat();
-    private final String pathname;
+    private final File directory;
 
-    public ListingProcess(@Nonnull Client client, @Nullable String pathname) {
+    public ListingProcess(@Nonnull Client client, @Nonnull File directory) {
         super(Objects.requireNonNull(client));
-        this.pathname = pathname;
+        this.directory = directory;
     }
 
     @Override
     public void perform() {
         try {
             PrintWriter writer = new PrintWriter(client.getDataConnection().getOutputStream());
-            // creates a new File instance by converting
-            // the given pathname string into an abstract pathname
-            File[] files = new File(pathname == null ? client.getWorkingDirectory() : pathname).listFiles();
-            for (File file : files) {
+            for (File file : directory.listFiles()) {
                 if (file.isHidden()) continue;
                 writer.println(new String(format.parse(file).getBytes(), MESSAGE_CHARSET));
             }

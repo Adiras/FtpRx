@@ -24,11 +24,15 @@ import com.ftprx.server.util.SocketHelper;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -61,7 +65,7 @@ public class Client {
     private ConcurrentLinkedQueue<Reply> replyBuffer;
 
     private Account account;
-    private String workingDirectory;
+    private Path workingDirectory;
 
     private String selectedUsername;
 
@@ -73,7 +77,7 @@ public class Client {
 
     public void login(@Nonnull Account account) {
         this.account = requireNonNull(account);
-        changeWorkingDirectory(account.getHomeDirectory());
+        workingDirectory = Paths.get(account.getHomeDirectory());
     }
 
     public boolean hasSelectedUsername() {
@@ -90,19 +94,22 @@ public class Client {
 
     public void logout() {
         account = null;
-        changeWorkingDirectory(null);
+        workingDirectory = null;
     }
 
     public boolean isLoggedIn() {
         return account != null;
     }
 
-    public void changeWorkingDirectory(@Nullable String workingDirectory) {
-        this.workingDirectory = workingDirectory;
+    public void changeWorkingDirectory(@Nullable Path workingDirectory) throws WorkingDirectoryChangeException {
+        if (!Files.exists(workingDirectory))
+            throw new WorkingDirectoryChangeException("Directory not exists.");
+        // the normalize method removes any redundant elements, which includes any ".."
+        this.workingDirectory = workingDirectory.normalize();
     }
 
     @CheckForNull
-    public String getWorkingDirectory() {
+    public Path getWorkingDirectory() {
         return workingDirectory;
     }
 
@@ -118,6 +125,10 @@ public class Client {
 //                selectedUsername = null;
 //            }
         }
+    }
+
+    public Path getRemotePath(String pathname) {
+        return Paths.get(workingDirectory + File.separator + pathname);
     }
 
     public void sendReply(Integer code, String text) {
