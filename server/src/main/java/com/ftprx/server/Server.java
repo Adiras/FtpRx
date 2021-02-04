@@ -22,6 +22,7 @@ import com.ftprx.server.repository.FileAccountRepository;
 import com.ftprx.server.thread.ListenerThread;
 import com.ftprx.server.thread.ThreadManager;
 import com.ftprx.server.util.SocketHelper;
+import org.aeonbits.owner.ConfigFactory;
 import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
@@ -38,21 +39,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * and manages the server data transfer process.
  */
 public class Server {
-    private static final int PORT = 21;
     private static final int SO_TIMEOUT = 3000;
-    private static final String HOSTNAME = "127.0.0.1";
     private static Server instance = null;
     private final List<Client> clients;
     private Instant startTimestamp;
     private ServerSocket server;
     private ListenerThread listenerThread;
     private ServerStatus status;
+    private ServerConfig config;
     private ObservableAccountRepository accountRepository;
 
     private Server() {
         this.clients = new CopyOnWriteArrayList<>();
         this.accountRepository = new FileAccountRepository("users.ftprx");
         this.status = ServerStatus.STOPPED;
+        this.config = ConfigFactory.create(ServerConfig.class);
     }
 
     /**
@@ -64,7 +65,7 @@ public class Server {
             try {
                 server = new ServerSocket();
                 server.setSoTimeout(SO_TIMEOUT);
-                server.bind(new InetSocketAddress(HOSTNAME, PORT));
+                server.bind(new InetSocketAddress(config.hostname(), config.port()));
                 listenerThread = new ListenerThread(server);
                 listenerThread.registerClientConnectObserver(this::acceptClient);
                 listenerThread.start();
@@ -135,6 +136,15 @@ public class Server {
     @Nonnull
     public List<Client> getClients() {
         return clients;
+    }
+
+    /**
+     * Method will perform the reload of all properties.
+     * If the configuration files have been altered, after the reload invocation,
+     * those changes will be reflected in the config object.
+     */
+    public void reloadConfig() {
+        config.reload();
     }
 
     private void acceptClient(Socket socket) {

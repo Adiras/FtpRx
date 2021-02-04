@@ -18,6 +18,7 @@ package com.ftprx.server.command;
 
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
+import org.tinylog.Logger;
 
 import java.io.IOException;
 
@@ -41,7 +42,7 @@ public class LogoutCommand extends SimpleCommand {
             client.sendReply(221, "Goodbye.");
             client.closeControlConnection();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
         }
     }
 }

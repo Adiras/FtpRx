@@ -43,7 +43,7 @@ public class ListingProcess extends DataTransferProcess {
     public void perform() {
         try {
             PrintWriter writer = new PrintWriter(client.getDataConnection().getOutputStream());
-            // Creates a new File instance by converting
+            // creates a new File instance by converting
             // the given pathname string into an abstract pathname
             File[] files = new File(pathname == null ? client.getWorkingDirectory() : pathname).listFiles();
             for (File file : files) {

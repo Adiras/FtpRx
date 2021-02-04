@@ -59,7 +59,7 @@ public class WorkerThread implements Runnable {
                 String line;
                 while (reader.ready() && (line = reader.readLine()) != null) {
                     Logger.debug("<-- '{}'", line);
-                    client.receiveCommand(Command.valueOf(line));
+                    client.receiveCommand(Command.createCommand(line));
                 }
 
                 Command command;

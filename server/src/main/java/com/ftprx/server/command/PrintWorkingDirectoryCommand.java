@@ -19,6 +19,9 @@ package com.ftprx.server.command;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
+/**
+ * This command causes the name of the current working directory to be returned in the reply.
+ */
 public class PrintWorkingDirectoryCommand extends SimpleCommand {
 
     @Override

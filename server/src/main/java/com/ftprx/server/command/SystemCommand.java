@@ -29,11 +29,11 @@ public class SystemCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        // Operating system name
+        // operating system name
         var name = System.getProperty("os.name");
-        // Operating system version
+        // operating system version
         var version = System.getProperty("os.version");
-        // Operating system architecture
+        // operating system architecture
         var arch = System.getProperty("os.arch");
         client.sendReply(215, String.format("%s - %s (%s)", name, version, arch));
     }

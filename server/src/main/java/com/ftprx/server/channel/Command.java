@@ -26,6 +26,7 @@ import java.util.Objects;
 
 /**
  * The commands are Telnet character strings transmitted over the control connections.
+ * Objects of this class are immutable.
  */
 public class Command {
     /**
@@ -39,6 +40,10 @@ public class Command {
      * All characters in the arguments field are ASCII characters including any ASCII represented decimal integers.
      */
     private final String argument;
+
+    public Command(@Nonnull String code) {
+        this(code, null);
+    }
 
     public Command(@Nonnull String code, @Nullable String arguments) {
         this.code = Objects.requireNonNull(code);
@@ -61,7 +66,7 @@ public class Command {
         return code.equals(e.name());
     }
 
-    public static Command valueOf(String input) {
+    public static Command createCommand(String input) {
         int codeMaxLength = 4;
         int endIndex = Math.min(input.length(), codeMaxLength);
         String code = input.substring(0, endIndex).trim();

@@ -18,6 +18,11 @@ package com.ftprx.server.command;
 
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
+import org.tinylog.Logger;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /*
  * This command causes the directory specified in the pathname
@@ -33,12 +38,12 @@ public class MakeDirectoryCommand extends SimpleCommand {
         if (pathname == null || pathname.equals("")) {
             client.sendReply(501, "Syntax error in parameters or arguments.");
         } else {
-            client.sendReply(257, "Directory created " + pathname);
-//            try {
-//                Files.createDirectory(Paths.get(pathname));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                Files.createDirectory(Paths.get(pathname));
+                client.sendReply(257, "Directory created " + pathname);
+            } catch (IOException e) {
+                Logger.error(e.getMessage());
+            }
         }
     }
 }

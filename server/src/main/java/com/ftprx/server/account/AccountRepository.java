@@ -33,7 +33,7 @@ public interface AccountRepository {
 
     /**
      * Retrieves an account by its username.
-     * @param username - must not be {@code null}.
+     * @param username must not be {@code null}
      */
     Account findByUsername(@Nonnull String username);
 

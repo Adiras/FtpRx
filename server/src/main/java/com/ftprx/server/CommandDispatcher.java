@@ -29,7 +29,7 @@ public class CommandDispatcher {
 
     /**
      * Create a new {@link CommandDispatcher} instance.
-     * @param client the client that is assigned for this dispatcher.
+     * @param client the client that is assigned for this dispatcher
      */
     public CommandDispatcher(@Nonnull Client client) {
         this.client = Objects.requireNonNull(client, "Client should not be null");
