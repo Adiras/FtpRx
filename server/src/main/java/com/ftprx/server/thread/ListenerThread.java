@@ -37,7 +37,7 @@ public class ListenerThread extends Thread {
     private final ServerSocket server;
 
     public ListenerThread(@Nonnull ServerSocket server) {
-        this.server = Objects.requireNonNull(server, "Server should not be null");
+        this.server = Objects.requireNonNull(server, "Server must not be null");
         this.observers = Collections.newSetFromMap(new ConcurrentHashMap<>());
         setName(THREAD_NAME);
     }

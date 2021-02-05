@@ -16,7 +16,6 @@
 
 package com.ftprx.server.channel;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.ConnectionMode;
 import com.ftprx.server.account.Account;
 import com.ftprx.server.util.SocketHelper;
@@ -29,10 +28,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -61,12 +60,11 @@ public class Client {
     /**
      * Queues that store commands and replies that should be handled by worker thread.
      */
-    private ConcurrentLinkedQueue<Command> commandBuffer;
-    private ConcurrentLinkedQueue<Reply> replyBuffer;
+    private final ConcurrentLinkedQueue<Command> commandBuffer;
+    private final ConcurrentLinkedQueue<Reply> replyBuffer;
 
     private Account account;
     private Path workingDirectory;
-
     private String selectedUsername;
 
     public Client(@Nonnull Socket controlConnection) {
@@ -76,8 +74,18 @@ public class Client {
     }
 
     public void login(@Nonnull Account account) {
-        this.account = requireNonNull(account);
+        Objects.requireNonNull(account, "Account must not be null");
+        this.account = account;
         workingDirectory = Paths.get(account.getHomeDirectory());
+    }
+
+    public void logout() {
+        account = null;
+        workingDirectory = null;
+    }
+
+    public boolean isLoggedIn() {
+        return account != null;
     }
 
     public boolean hasSelectedUsername() {
@@ -92,14 +100,7 @@ public class Client {
         this.selectedUsername = selectedUsername;
     }
 
-    public void logout() {
-        account = null;
-        workingDirectory = null;
-    }
 
-    public boolean isLoggedIn() {
-        return account != null;
-    }
 
     public void changeWorkingDirectory(@Nullable Path workingDirectory) throws WorkingDirectoryChangeException {
         if (!Files.exists(workingDirectory))
@@ -119,12 +120,18 @@ public class Client {
     }
 
     public void receiveCommand(@Nullable Command command) {
+//        Optional.ofNullable(command)
+//                .ifPresent(commandBuffer::add);
         if (command != null) {
             commandBuffer.add(command);
 //            if (!command.equalsCode(CommandCode.PASS)) {
 //                selectedUsername = null;
 //            }
         }
+    }
+
+    public Path getParentPath() {
+        return workingDirectory.getParent();
     }
 
     public Path getRemotePath(String pathname) {
@@ -147,13 +154,17 @@ public class Client {
         return controlConnection.getOutputStream();
     }
 
-    @Nullable
-    public Socket getDataConnection() {
-        return dataConnection;
+    public void establishDataConnection(@Nonnull Socket dataConnection) {
+        this.dataConnection = Objects.requireNonNull(dataConnection);
     }
 
     public void openDataConnection(@Nonnull ConnectionMode mode) {
         mode.openConnection(this);
+    }
+
+    @Nullable
+    public Socket getDataConnection() {
+        return dataConnection;
     }
 
     public void closeDataConnection() throws IOException {
@@ -169,14 +180,12 @@ public class Client {
         controlConnection.close();
     }
 
-    public void establishDataConnection(@Nonnull Socket dataConnection) {
-        this.dataConnection = requireNonNull(dataConnection);
-    }
-
+    @Nonnull
     public ConcurrentLinkedQueue<Command> getBufferedCommands() {
         return commandBuffer;
     }
 
+    @Nonnull
     public ConcurrentLinkedQueue<Reply> getBufferedReplies() {
         return replyBuffer;
     }

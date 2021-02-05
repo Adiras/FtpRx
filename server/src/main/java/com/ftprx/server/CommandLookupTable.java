@@ -17,6 +17,7 @@
 package com.ftprx.server;
 
 import com.ftprx.server.channel.Command;
+import com.ftprx.server.channel.CommandCode;
 import com.ftprx.server.command.*;
 
 import javax.annotation.Nonnull;
@@ -25,8 +26,8 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.ftprx.server.CommandCode.*;
-import static com.ftprx.server.CommandCode.LIST;
+import static com.ftprx.server.channel.CommandCode.*;
+import static com.ftprx.server.channel.CommandCode.LIST;
 import static java.util.Objects.requireNonNull;
 
 public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
@@ -39,14 +40,16 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
             registerCommand(USER, UsernameCommand::new);
             registerCommand(PASS, PasswordCommand::new);
             registerCommand(ACCT, AccountCommand::new);
+            registerCommand(CWD,  ChangeWorkingDirectoryCommand::new);
+            registerCommand(CDUP, ChangeToParentDirectoryCommand::new);
+            registerCommand(REIN, ReinitializeCommand::new);
             registerCommand(PWD,  PrintWorkingDirectoryCommand::new);
-            registerCommand(XPWD, PrintWorkingDirectoryCommand::new);
             registerCommand(PORT, DataPortCommand::new);
+            registerCommand(HELP, HelpCommand::new);
             registerCommand(STOR, StoreCommand::new);
             registerCommand(NLST, NameListCommand::new);
             registerCommand(QUIT, LogoutCommand::new);
             registerCommand(PASV, PassiveCommand::new);
-            registerCommand(CWD,  ChangeWorkingDirectoryCommand::new);
             registerCommand(MKD,  MakeDirectoryCommand::new);
             registerCommand(SYST, SystemCommand::new);
             registerCommand(TYPE, RepresentationTypeCommand::new);
@@ -54,6 +57,8 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
             registerCommand(LIST, ListCommand::new);
             registerCommand(RETR, RetrieveCommand::new);
             registerCommand(DELE, DeleteCommand::new);
+            registerCommand(SMNT, StructureMountCommand::new);
+            registerCommand(STOU, StoreUniqueCommand::new);
         }};
     }
 
@@ -80,6 +85,7 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
      */
     @Nullable
     public SimpleCommand getCommand(@Nonnull Command command) {
+        Objects.requireNonNull(command, "Command must not be null");
         for (Entry<CommandCode, SimpleCommand> entry : entrySet()) {
             if (command.equalsCode(entry.getKey())) {
                 return entry.getValue();
@@ -103,7 +109,7 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
      * @return true if the command is registered in this {@link CommandLookupTable}.
      */
     public boolean isCommandRegistered(@Nonnull Command command) {
-        Objects.requireNonNull(command, "Command should not be null");
+        Objects.requireNonNull(command, "Command must not be null");
         for (Entry<CommandCode, SimpleCommand> entry : entrySet()) {
             if (command.equalsCode(entry.getKey())) {
                 return true;

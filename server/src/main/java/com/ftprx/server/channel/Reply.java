@@ -21,6 +21,7 @@ import com.ftprx.server.util.ControlCharacters;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A reply is an acknowledgment (positive or negative) sent from
@@ -39,14 +40,16 @@ public class Reply {
     private final String text;
 
     public Reply(@Nonnull String code, @Nullable String text) {
-        this.code = Objects.requireNonNull(code, "Code should not be null");
-        this.text = text;
+        this.code = Objects.requireNonNull(code, "Code must not be null");
+        this.text = Optional.ofNullable(text).orElse(ControlCharacters.EMPTY);
     }
 
+    @Nonnull
     public String getCode() {
         return code;
     }
 
+    @Nonnull
     public String getText() {
         return text;
     }

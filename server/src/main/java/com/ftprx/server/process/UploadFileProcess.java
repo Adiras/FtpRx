@@ -14,7 +14,7 @@ public class UploadFileProcess extends DataTransferProcess {
 
     public UploadFileProcess(@Nonnull Client client, @Nonnull File file) {
         super(client);
-        this.file = Objects.requireNonNull(file, "File should not be null");
+        this.file = Objects.requireNonNull(file, "File must not be null");
     }
 
     @Override

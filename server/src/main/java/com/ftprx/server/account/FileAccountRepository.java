@@ -55,7 +55,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void update(@Nonnull Account account) {
-        Objects.requireNonNull(account, "Account should not be null");
+        Objects.requireNonNull(account, "Account must not be null");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void insert(@Nonnull Account account) throws AccountInsertException {
-        Objects.requireNonNull(account, "Account should not be null");
+        Objects.requireNonNull(account, "Account must not be null");
         if (isAccountExists(account)) {
             throw new AccountInsertException(ACCOUNT_ALREADY_EXISTS);
         }
@@ -96,7 +96,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
 
     @Override
     public void delete(@Nonnull Account account) {
-        Objects.requireNonNull(account, "Account should not be null");
+        Objects.requireNonNull(account, "Account must not be null");
         delete(account.getUsername());
         notifyDeleteAccount(account);
     }

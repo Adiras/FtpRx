@@ -21,7 +21,9 @@ package com.ftprx.server.account;
  * {@link Account} class, usually thrown by the constructor.
  */
 public class AccountCreateException extends Throwable {
-    // Message when the username does not meet the length standards
+    /**
+     * Message when the username does not meet the length standards.
+     */
     public static final String WRONG_USERNAME_LENGTH = "Wrong username length";
 
     public AccountCreateException(String message) {

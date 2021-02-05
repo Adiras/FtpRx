@@ -38,7 +38,8 @@ public abstract class DataTransferProcess implements Runnable {
     protected final Client client;
 
     public DataTransferProcess(@Nonnull Client client) {
-        this.client = Objects.requireNonNull(client, "Client should not be null");
+        Objects.requireNonNull(client, "Client must not be null");
+        this.client = client;
     }
 
     public abstract void perform();

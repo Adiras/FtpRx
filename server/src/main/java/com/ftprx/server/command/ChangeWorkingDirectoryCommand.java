@@ -44,7 +44,7 @@ public class ChangeWorkingDirectoryCommand extends SimpleCommand {
             client.changeWorkingDirectory(client.getRemotePath(pathname));
             client.sendReply(200, "Directory changed to " + client.getWorkingDirectory());
         } catch (WorkingDirectoryChangeException e) {
-            client.sendReply(431, e.getMessage());
+            client.sendReply(421, e.getMessage());
         }
     }
 }

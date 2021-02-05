@@ -16,7 +16,6 @@
 
 package com.ftprx.server.channel;
 
-import com.ftprx.server.CommandCode;
 import com.ftprx.server.util.ControlCharacters;
 
 import javax.annotation.Nonnull;

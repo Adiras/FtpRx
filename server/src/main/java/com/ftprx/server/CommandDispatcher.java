@@ -32,7 +32,7 @@ public class CommandDispatcher {
      * @param client the client that is assigned for this dispatcher
      */
     public CommandDispatcher(@Nonnull Client client) {
-        this.client = Objects.requireNonNull(client, "Client should not be null");
+        this.client = Objects.requireNonNull(client, "Client must not be null");
         this.commandLookupTable = CommandLookupTable.bootstrap();
     }
 

@@ -17,6 +17,7 @@
 package com.ftprx.server;
 
 import com.ftprx.server.channel.Client;
+import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class PassiveConnectionMode implements ConnectionMode {
             try (ServerSocket socket = new ServerSocket(port)) {
                 client.establishDataConnection(socket.accept());
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.error(e.getMessage());
             }
         });
         connectionThread.start();

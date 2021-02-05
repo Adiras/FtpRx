@@ -17,6 +17,7 @@
 package com.ftprx.server;
 
 import com.ftprx.server.channel.Client;
+import org.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -32,9 +33,8 @@ public class ActiveConnectionMode implements ConnectionMode {
      * @param port the port number
      */
     public ActiveConnectionMode(String host, int port) {
-        if (!(port > 0 && port < 65535)) {
+        if (!(port > 0 && port < 65535))
             throw new IllegalArgumentException("Invalid port number");
-        }
         this.host = host;
         this.port = port;
     }
@@ -49,7 +49,7 @@ public class ActiveConnectionMode implements ConnectionMode {
             Socket socket = new Socket(host, port);
             client.establishDataConnection(socket);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage());
         }
     }
 }

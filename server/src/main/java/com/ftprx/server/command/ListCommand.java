@@ -41,7 +41,7 @@ public class ListCommand extends SimpleCommand {
 
     @Override
     public void execute(Command command, Client client) {
-        var pathname = command.getArgument();
+        final var pathname = command.getArgument();
         File directory = pathname.isEmpty()
                 ? client.getWorkingDirectory().toFile()
                 : client.getRemotePath(pathname).toFile();

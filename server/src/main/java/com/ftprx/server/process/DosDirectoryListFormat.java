@@ -1,5 +1,6 @@
 package com.ftprx.server.process;
 
+import com.ftprx.server.util.ControlCharacters;
 import org.tinylog.Logger;
 
 import java.io.File;
@@ -26,6 +27,6 @@ public class DosDirectoryListFormat implements DirectoryListFormat {
         } catch (IOException e) {
             Logger.error(e.getMessage());
         }
-        return "";
+        return ControlCharacters.EMPTY;
     }
 }

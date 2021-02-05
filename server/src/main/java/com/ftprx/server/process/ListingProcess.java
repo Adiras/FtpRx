@@ -36,7 +36,7 @@ public class ListingProcess extends DataTransferProcess {
     private final File directory;
 
     public ListingProcess(@Nonnull Client client, @Nonnull File directory) {
-        super(Objects.requireNonNull(client));
+        super(client);
         this.directory = directory;
     }
 
@@ -44,6 +44,9 @@ public class ListingProcess extends DataTransferProcess {
     public void perform() {
         try {
             PrintWriter writer = new PrintWriter(client.getDataConnection().getOutputStream());
+//            Stream.of(directory.listFiles())
+//                    .dropWhile(File::isHidden)
+//                    .forEach(file -> writer.println(new String(format.parse(file).getBytes(), MESSAGE_CHARSET)));
             for (File file : directory.listFiles()) {
                 if (file.isHidden()) continue;
                 writer.println(new String(format.parse(file).getBytes(), MESSAGE_CHARSET));
