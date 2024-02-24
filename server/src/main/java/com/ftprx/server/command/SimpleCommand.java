@@ -21,7 +21,7 @@ import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 
 /**
- * The interface definition for a FTP Command.
+ * The interface definition for an FTP Command.
  * Your subclass should implement the <code>execute</code> method.
  */
 public abstract class SimpleCommand {
