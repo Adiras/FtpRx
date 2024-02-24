@@ -16,6 +16,7 @@
 
 package com.ftprx.server;
 
+import com.ftprx.server.account.AccountFileFormat;
 import com.ftprx.server.account.ObservableAccountRepository;
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.repository.FileAccountRepository;
@@ -51,7 +52,7 @@ public class Server {
 
     private Server() {
         this.clients = new CopyOnWriteArrayList<>();
-        this.accountRepository = new FileAccountRepository("users.ftprx");
+        this.accountRepository = new FileAccountRepository("accounts.json", AccountFileFormat.JSON);
         this.status = ServerStatus.STOPPED;
         this.config = ConfigFactory.create(ServerConfig.class);
     }

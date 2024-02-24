@@ -17,13 +17,12 @@
 package com.ftprx.server.repository;
 
 import com.ftprx.server.account.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.tinylog.Logger;
 
-import java.io.*;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -31,17 +30,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ftprx.server.account.AccountInsertException.ACCOUNT_ALREADY_EXISTS;
 import static java.nio.file.Files.*;
+import static java.util.Collections.emptyList;
 
 public class FileAccountRepository implements ObservableAccountRepository {
-    private final Gson gson;
-    private final Path repositoryFile;
+    private final Path accountsFile;
     private final Set<AccountRepositoryChangeListener> listeners;
+    private final AccountFileManager fileManager;
 
-    public FileAccountRepository(String filename) {
-        this.repositoryFile = Paths.get(filename);
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+    public FileAccountRepository(String filename, AccountFileFormat fileFormat) {
+        this.accountsFile = Paths.get(filename);
+
+        switch (fileFormat) {
+            case JSON -> fileManager = new JsonAccountFileManager();
+            default -> throw new IllegalStateException("Unexpected value: " + fileFormat);
+        }
 
         listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -50,9 +52,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
             insert(new Account("admin", "test", "dir"));
             insert(new Account("admin2", "test", "dir"));
             insert(new Account("admin3", "test", "dir"));
-        } catch (AccountInsertException ignore) {} catch (AccountCreateException e) {
-            e.printStackTrace();
-        }
+        } catch (AccountInsertException | AccountCreateException ignore) {}
     }
 
     @Override
@@ -119,11 +119,11 @@ public class FileAccountRepository implements ObservableAccountRepository {
         saveFile(toSave);
     }
 
-    private void createRepositoryFileIfNotExists() {
-        if (!exists(repositoryFile)) {
+    private void createAccountsFileIfNotExists() {
+        if (!exists(accountsFile)) {
             Logger.debug("Account file not found!");
             try {
-                createFile(repositoryFile);
+                createFile(accountsFile);
             } catch (Exception e) {
                 Logger.error(e.getMessage());
             }
@@ -131,20 +131,20 @@ public class FileAccountRepository implements ObservableAccountRepository {
     }
 
     private void saveFile(List<Account> accounts) {
-        createRepositoryFileIfNotExists();
-        try (Writer writer = newBufferedWriter(repositoryFile)) {
-            gson.toJson(accounts, writer);
+        createAccountsFileIfNotExists();
+        try (Writer writer = newBufferedWriter(accountsFile)) {
+            fileManager.write(writer, accounts);
         } catch (Exception e) {
             Logger.error(e.getMessage());
         }
     }
 
     public List<Account> readFile() {
-        createRepositoryFileIfNotExists();
-        try (Reader reader = newBufferedReader(repositoryFile)) {
-            return Arrays.asList(gson.fromJson(reader, Account[].class));
+        createAccountsFileIfNotExists();
+        try (Reader reader = newBufferedReader(accountsFile)) {
+            return fileManager.read(reader);
         } catch (Exception e) {
-            return Collections.emptyList();
+            return emptyList();
         }
     }
 
