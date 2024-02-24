@@ -16,7 +16,7 @@
 
 package com.ftprx.server.account;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A repository that allows listeners to track changes when they occur.

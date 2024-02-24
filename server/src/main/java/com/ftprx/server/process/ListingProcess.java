@@ -17,10 +17,9 @@
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +34,7 @@ public class ListingProcess extends DataTransferProcess {
     private DirectoryListFormat format = new DosDirectoryListFormat();
     private final File directory;
 
-    public ListingProcess(@Nonnull Client client, @Nonnull File directory) {
+    public ListingProcess(@NotNull Client client, @NotNull File directory) {
         super(client);
         this.directory = directory;
     }

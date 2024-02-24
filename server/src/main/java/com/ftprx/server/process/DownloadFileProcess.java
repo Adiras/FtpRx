@@ -1,16 +1,16 @@
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.Objects;
 
 public class DownloadFileProcess extends DataTransferProcess {
     private final File file;
 
-    public DownloadFileProcess(@Nonnull Client client, @Nonnull File file) {
+    public DownloadFileProcess(@NotNull Client client, @NotNull File file) {
         super(client);
         this.file = Objects.requireNonNull(file, "File must not be null");
     }

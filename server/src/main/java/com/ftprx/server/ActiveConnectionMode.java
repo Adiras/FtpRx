@@ -17,9 +17,9 @@
 package com.ftprx.server;
 
 import com.ftprx.server.channel.Client;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -44,7 +44,7 @@ public class ActiveConnectionMode implements ConnectionMode {
      * The method blocks thread until a connection is made.
      */
     @Override
-    public void openConnection(@Nonnull Client client) {
+    public void openConnection(@NotNull Client client) {
         try {
             Socket socket = new Socket(host, port);
             client.establishDataConnection(socket);

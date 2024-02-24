@@ -17,10 +17,10 @@
 package com.ftprx.server.thread;
 
 import com.ftprx.server.util.SocketHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -36,7 +36,7 @@ public class ListenerThread extends Thread {
     private final Set<ClientConnectObserver> observers;
     private final ServerSocket server;
 
-    public ListenerThread(@Nonnull ServerSocket server) {
+    public ListenerThread(@NotNull ServerSocket server) {
         this.server = Objects.requireNonNull(server, "Server must not be null");
         this.observers = Collections.newSetFromMap(new ConcurrentHashMap<>());
         setName(THREAD_NAME);
@@ -66,7 +66,7 @@ public class ListenerThread extends Thread {
         Optional.ofNullable(observer).ifPresent(observers::remove);
     }
 
-    private void notifyObservers(@Nonnull Socket client) {
+    private void notifyObservers(@NotNull Socket client) {
         for (ClientConnectObserver observer : observers) {
             observer.onClientConnected(client);
         }

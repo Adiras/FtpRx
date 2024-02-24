@@ -19,9 +19,9 @@ package com.ftprx.server;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.CommandCode;
 import com.ftprx.server.command.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -65,16 +65,16 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
     /**
      * Assign the {@link CommandCode} with given {@link SimpleCommand}.
      */
-    public void registerCommand(@Nonnull CommandCode code,
-                                @Nonnull Supplier<SimpleCommand> commandSupplier) {
+    public void registerCommand(@NotNull CommandCode code,
+                                @NotNull Supplier<SimpleCommand> commandSupplier) {
         registerCommand(code, commandSupplier.get());
     }
 
     /**
      * Assign the {@link CommandCode} with given {@link SimpleCommand}.
      */
-    public void registerCommand(@Nonnull CommandCode code,
-                                @Nonnull SimpleCommand command) {
+    public void registerCommand(@NotNull CommandCode code,
+                                @NotNull SimpleCommand command) {
         put(requireNonNull(code), requireNonNull(command));
     }
 
@@ -84,7 +84,7 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
      *         or null if the command is not registered.
      */
     @Nullable
-    public SimpleCommand getCommand(@Nonnull Command command) {
+    public SimpleCommand getCommand(@NotNull Command command) {
         Objects.requireNonNull(command, "Command must not be null");
         for (Entry<CommandCode, SimpleCommand> entry : entrySet()) {
             if (command.equalsCode(entry.getKey())) {
@@ -99,7 +99,7 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
      * @param command the command which {@link CommandCode} is looking for.
      * @return true if the command is not registered in this {@link CommandLookupTable}.
      */
-    public boolean isCommandNotRegistered(@Nonnull Command command) {
+    public boolean isCommandNotRegistered(@NotNull Command command) {
         return !isCommandRegistered(command);
     }
 
@@ -108,7 +108,7 @@ public class CommandLookupTable extends HashMap<CommandCode, SimpleCommand> {
      * @param command the command which {@link CommandCode} is looking for.
      * @return true if the command is registered in this {@link CommandLookupTable}.
      */
-    public boolean isCommandRegistered(@Nonnull Command command) {
+    public boolean isCommandRegistered(@NotNull Command command) {
         Objects.requireNonNull(command, "Command must not be null");
         for (Entry<CommandCode, SimpleCommand> entry : entrySet()) {
             if (command.equalsCode(entry.getKey())) {

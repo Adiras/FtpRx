@@ -19,10 +19,10 @@ package com.ftprx.server.repository;
 import com.ftprx.server.account.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,12 +56,12 @@ public class FileAccountRepository implements ObservableAccountRepository {
     }
 
     @Override
-    public void update(@Nonnull Account account) {
+    public void update(@NotNull Account account) {
         Objects.requireNonNull(account, "Account must not be null");
     }
 
     @Override
-    public Account findByUsername(@Nonnull String username) {
+    public Account findByUsername(@NotNull String username) {
         return findAll()
                 .stream()
                 .filter(account -> username.equals(account.getUsername()))
@@ -75,7 +75,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
     }
 
     @Override
-    public void insert(@Nonnull Account account) throws AccountInsertException {
+    public void insert(@NotNull Account account) throws AccountInsertException {
         Objects.requireNonNull(account, "Account must not be null");
         if (isAccountExists(account)) {
             throw new AccountInsertException(ACCOUNT_ALREADY_EXISTS);
@@ -97,7 +97,7 @@ public class FileAccountRepository implements ObservableAccountRepository {
     }
 
     @Override
-    public void delete(@Nonnull Account account) {
+    public void delete(@NotNull Account account) {
         Objects.requireNonNull(account, "Account must not be null");
         delete(account.getUsername());
         notifyDeleteAccount(account);

@@ -17,9 +17,9 @@
 package com.ftprx.server.channel;
 
 import com.ftprx.server.util.ControlCharacters;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,17 +39,17 @@ public class Reply {
      */
     private final String text;
 
-    public Reply(@Nonnull String code, @Nullable String text) {
+    public Reply(@NotNull String code, @Nullable String text) {
         this.code = Objects.requireNonNull(code, "Code must not be null");
         this.text = Optional.ofNullable(text).orElse(ControlCharacters.EMPTY);
     }
 
-    @Nonnull
+    @NotNull
     public String getCode() {
         return code;
     }
 
-    @Nonnull
+    @NotNull
     public String getText() {
         return text;
     }

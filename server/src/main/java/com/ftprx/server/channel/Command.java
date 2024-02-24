@@ -17,10 +17,8 @@
 package com.ftprx.server.channel;
 
 import com.ftprx.server.util.ControlCharacters;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -41,20 +39,20 @@ public class Command {
      */
     private final String argument;
 
-    public Command(@Nonnull String code) {
+    public Command(@NotNull String code) {
         this(code, null);
     }
 
-    public Command(@Nonnull String code, @Nullable String arguments) {
+    public Command(@NotNull String code, @Nullable String arguments) {
         this.code = Objects.requireNonNull(code);
         this.argument = arguments;
     }
 
-    public @Nonnull String getCode() {
+    public @NotNull String getCode() {
         return code;
     }
 
-    public @Nonnull String getArgument() {
+    public @NotNull String getArgument() {
         return argument == null ? ControlCharacters.EMPTY : argument;
     }
 

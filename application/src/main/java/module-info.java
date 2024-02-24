@@ -3,7 +3,7 @@ module ftprx.application {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
-    requires jsr305;
+    requires org.jetbrains.annotations;
     opens com.ftprx.application to javafx.graphics;
     opens com.ftprx.application.controller to javafx.fxml;
 }

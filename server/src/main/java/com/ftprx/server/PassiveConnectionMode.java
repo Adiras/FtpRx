@@ -17,9 +17,9 @@
 package com.ftprx.server;
 
 import com.ftprx.server.channel.Client;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
@@ -42,7 +42,7 @@ public class PassiveConnectionMode implements ConnectionMode {
      * The method blocks thread until a connection is made.
      */
     @Override
-    public void openConnection(@Nonnull Client client) {
+    public void openConnection(@NotNull Client client) {
         Thread connectionThread = new Thread(() -> {
             try (ServerSocket socket = new ServerSocket(port)) {
                 client.establishDataConnection(socket.accept());

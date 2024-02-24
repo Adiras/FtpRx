@@ -16,9 +16,9 @@
 
 package com.ftprx.server.security;
 
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -33,7 +33,7 @@ public class PasswordEncoder {
         return encodedPassword.equals(generateHash(plainPassword));
     }
 
-    private static String generateHash(@Nonnull String input) {
+    private static String generateHash(@NotNull String input) {
         StringBuilder hash = new StringBuilder();
         try {
             MessageDigest sha = MessageDigest.getInstance(ALGORITHM);

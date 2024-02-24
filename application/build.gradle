@@ -7,10 +7,9 @@ plugins {
     id 'org.beryx.jlink' version '2.23.2'
 }
 
-mainClassName = "$moduleName/com.ftprx.application.FtpRxApplication"
-
 dependencies {
     implementation project(':server');
+    implementation group: 'org.jetbrains', name: 'annotations', version: '24.1.0'
 }
 
 javafx {
@@ -22,4 +21,9 @@ jlink {
     launcher {
         name = 'ftprx'
     }
+}
+
+application {
+    mainModule = "$moduleName"
+    mainClassName = "com.ftprx.application.FtpRxApplication"
 }

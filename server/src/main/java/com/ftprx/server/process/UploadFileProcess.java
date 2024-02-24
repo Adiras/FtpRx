@@ -1,9 +1,9 @@
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Objects;
@@ -12,7 +12,7 @@ public class UploadFileProcess extends DataTransferProcess {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
     private final File file;
 
-    public UploadFileProcess(@Nonnull Client client, @Nonnull File file) {
+    public UploadFileProcess(@NotNull Client client, @NotNull File file) {
         super(client);
         this.file = Objects.requireNonNull(file, "File must not be null");
     }

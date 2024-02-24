@@ -16,7 +16,8 @@
 
 package com.ftprx.server.account;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -29,13 +30,13 @@ public interface AccountRepository {
      * @param account must not be {@code null}.
      * @throws NullPointerException if {@code account} is {@code null}
      */
-    void update(@Nonnull Account account);
+    void update(@NotNull Account account);
 
     /**
      * Retrieves an account by its username.
      * @param username must not be {@code null}
      */
-    Account findByUsername(@Nonnull String username);
+    Account findByUsername(@NotNull String username);
 
     /**
      * Returns all existing account instances.
@@ -48,12 +49,12 @@ public interface AccountRepository {
      * @param account must not be {@code null}.
      * @throws NullPointerException if {@code account} is {@code null}
      */
-    void insert(@Nonnull Account account) throws AccountInsertException;
+    void insert(@NotNull Account account) throws AccountInsertException;
 
     /**
      * Delete a given account.
      * @param account must not be {@code null}.
      * @throws NullPointerException if {@code account} is {@code null}
      */
-    void delete(@Nonnull Account account);
+    void delete(@NotNull Account account);
 }

@@ -8,12 +8,9 @@ dependencies {
     testImplementation platform("org.spockframework:spock-bom:2.0-M4-groovy-3.0")
     testImplementation "org.spockframework:spock-core"
     implementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.12'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '24.1.0'
 }
 
 test {
     useJUnitPlatform()
 }
-
-//patchModules.config = [
-//        "annotations=jsr305",
-//]

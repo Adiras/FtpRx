@@ -17,10 +17,10 @@
 package com.ftprx.server.account;
 
 import com.ftprx.server.security.PasswordEncoder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class Account {
         // Empty constructor for serialization purpose
     }
 
-    public Account(@Nonnull String username, @Nonnull String homeDirectory,
+    public Account(@NotNull String username, @NotNull String homeDirectory,
                    @Nullable String plainPassword) throws AccountCreateException {
 
         this.username = validateUsername(username);
@@ -67,7 +67,7 @@ public class Account {
         return hashedPassword != null;
     }
 
-    @Nonnull
+    @NotNull
     public String getUsername() {
         return username;
     }

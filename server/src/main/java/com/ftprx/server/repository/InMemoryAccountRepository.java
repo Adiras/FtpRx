@@ -3,8 +3,8 @@ package com.ftprx.server.repository;
 import com.ftprx.server.account.Account;
 import com.ftprx.server.account.AccountCreateException;
 import com.ftprx.server.account.AccountRepository;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +21,12 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public void update(@Nonnull Account account) {
+    public void update(@NotNull Account account) {
 
     }
 
     @Override
-    public Account findByUsername(@Nonnull String username) {
+    public Account findByUsername(@NotNull String username) {
         for (Account account : accounts) {
             if (username.equals(account.getUsername())) {
                 return account;
@@ -41,12 +41,12 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public void insert(@Nonnull Account account) {
+    public void insert(@NotNull Account account) {
         accounts.add(account);
     }
 
     @Override
-    public void delete(@Nonnull Account account) {
+    public void delete(@NotNull Account account) {
         delete(account.getUsername());
     }
 

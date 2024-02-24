@@ -19,10 +19,9 @@ package com.ftprx.server.channel;
 import com.ftprx.server.ConnectionMode;
 import com.ftprx.server.account.Account;
 import com.ftprx.server.util.SocketHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,13 +66,13 @@ public class Client {
     private Path workingDirectory;
     private String selectedUsername;
 
-    public Client(@Nonnull Socket controlConnection) {
+    public Client(@NotNull Socket controlConnection) {
         this.controlConnection = requireNonNull(controlConnection);
         commandBuffer = new ConcurrentLinkedQueue<>();
         replyBuffer = new ConcurrentLinkedQueue<>();
     }
 
-    public void login(@Nonnull Account account) {
+    public void login(@NotNull Account account) {
         Objects.requireNonNull(account, "Account must not be null");
         this.account = account;
         workingDirectory = Paths.get(account.getHomeDirectory());
@@ -109,12 +108,12 @@ public class Client {
         this.workingDirectory = workingDirectory.normalize();
     }
 
-    @CheckForNull
+    @Nullable
     public Path getWorkingDirectory() {
         return workingDirectory;
     }
 
-    @CheckForNull
+    @Nullable
     public Account getAccount() {
         return account;
     }
@@ -154,11 +153,11 @@ public class Client {
         return controlConnection.getOutputStream();
     }
 
-    public void establishDataConnection(@Nonnull Socket dataConnection) {
+    public void establishDataConnection(@NotNull Socket dataConnection) {
         this.dataConnection = Objects.requireNonNull(dataConnection);
     }
 
-    public void openDataConnection(@Nonnull ConnectionMode mode) {
+    public void openDataConnection(@NotNull ConnectionMode mode) {
         mode.openConnection(this);
     }
 
@@ -171,7 +170,7 @@ public class Client {
         dataConnection.close();
     }
 
-    @Nonnull
+    @NotNull
     public Socket getControlConnection() {
         return controlConnection;
     }
@@ -180,12 +179,12 @@ public class Client {
         controlConnection.close();
     }
 
-    @Nonnull
+    @NotNull
     public ConcurrentLinkedQueue<Command> getBufferedCommands() {
         return commandBuffer;
     }
 
-    @Nonnull
+    @NotNull
     public ConcurrentLinkedQueue<Reply> getBufferedReplies() {
         return replyBuffer;
     }

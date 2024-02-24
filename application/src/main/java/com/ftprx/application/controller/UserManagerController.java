@@ -36,8 +36,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class UserManagerController implements AccountRepositoryChangeListener {
 
@@ -113,19 +112,19 @@ public class UserManagerController implements AccountRepositoryChangeListener {
     }
 
     @Override
-    public void onInsertAccount(@Nonnull Account account) {
+    public void onInsertAccount(@NotNull Account account) {
         data.add(account);
         userList.refresh();
     }
 
     @Override
-    public void onDeleteEvent(@Nonnull Account account) {
+    public void onDeleteEvent(@NotNull Account account) {
         data.remove(account);
         userList.refresh();
     }
 
     @Override
-    public void onUpdateEvent(@Nonnull Account account) {
+    public void onUpdateEvent(@NotNull Account account) {
     }
 
     public void setStage(Stage stage) {

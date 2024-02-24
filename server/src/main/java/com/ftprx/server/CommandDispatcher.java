@@ -18,8 +18,7 @@ package com.ftprx.server;
 
 import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -31,7 +30,7 @@ public class CommandDispatcher {
      * Create a new {@link CommandDispatcher} instance.
      * @param client the client that is assigned for this dispatcher
      */
-    public CommandDispatcher(@Nonnull Client client) {
+    public CommandDispatcher(@NotNull Client client) {
         this.client = Objects.requireNonNull(client, "Client must not be null");
         this.commandLookupTable = CommandLookupTable.bootstrap();
     }

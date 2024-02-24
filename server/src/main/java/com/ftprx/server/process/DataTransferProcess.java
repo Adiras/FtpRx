@@ -17,9 +17,9 @@
 package com.ftprx.server.process;
 
 import com.ftprx.server.channel.Client;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
@@ -37,7 +37,7 @@ public abstract class DataTransferProcess implements Runnable {
     private static final long CONNECTION_TIMEOUT = 2_000; // ms
     protected final Client client;
 
-    public DataTransferProcess(@Nonnull Client client) {
+    public DataTransferProcess(@NotNull Client client) {
         Objects.requireNonNull(client, "Client must not be null");
         this.client = client;
     }

@@ -23,9 +23,9 @@ import com.ftprx.server.thread.ListenerThread;
 import com.ftprx.server.thread.ThreadManager;
 import com.ftprx.server.util.SocketHelper;
 import org.aeonbits.owner.ConfigFactory;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.*;
 import java.time.Instant;
@@ -116,7 +116,7 @@ public class Server {
         status = ServerStatus.PAUSED;
     }
 
-    @Nonnull
+    @NotNull
     public ServerStatus getStatus() {
         return status;
     }
@@ -133,7 +133,7 @@ public class Server {
         return Optional.ofNullable(server);
     }
 
-    @Nonnull
+    @NotNull
     public List<Client> getClients() {
         return clients;
     }
@@ -173,7 +173,7 @@ public class Server {
         clients.add(connection);
     }
 
-    @Nonnull
+    @NotNull
     public synchronized static Server getInstance() {
         if (instance == null) {
             instance = new Server();

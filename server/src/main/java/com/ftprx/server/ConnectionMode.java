@@ -17,8 +17,8 @@
 package com.ftprx.server;
 
 import com.ftprx.server.channel.Client;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.net.Socket;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -28,5 +28,5 @@ public interface ConnectionMode {
      * Opens the data connection between client and server.
      * The method blocks thread until a connection is made.
      */
-    void openConnection(@Nonnull Client client);
+    void openConnection(@NotNull Client client);
 }

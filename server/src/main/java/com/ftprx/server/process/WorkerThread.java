@@ -20,9 +20,9 @@ import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.Reply;
 import com.ftprx.server.CommandDispatcher;
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
-import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.Socket;
 import java.util.Objects;
@@ -33,7 +33,7 @@ public class WorkerThread implements Runnable {
     private final Socket connection;
     private final CommandDispatcher dispatcher;
 
-    public WorkerThread(@Nonnull Client client) {
+    public WorkerThread(@NotNull Client client) {
         this.client = Objects.requireNonNull(client);
         this.connection = client.getControlConnection();
         this.dispatcher = new CommandDispatcher(client);
