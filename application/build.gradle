@@ -25,5 +25,5 @@ jlink {
 
 application {
     mainModule = "$moduleName"
-    mainClassName = "com.ftprx.application.FtpRxApplication"
+    mainClass = "com.ftprx.application.FtpRxApplication"
 }
