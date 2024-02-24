@@ -11,15 +11,6 @@ import java.util.List;
 public class InMemoryAccountRepository implements AccountRepository {
     private final List<Account> accounts = new ArrayList<>();
 
-    public InMemoryAccountRepository() {
-        try {
-            insert(new Account("admin", "C:/Users/wkacp/Desktop/server", "admin"));
-            insert(new Account("test", "C:/Users/wkacp/Desktop/servedr", "admin"));
-        } catch (AccountCreateException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void update(@NotNull Account account) {
 

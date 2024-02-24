@@ -46,13 +46,6 @@ public class FileAccountRepository implements ObservableAccountRepository {
         }
 
         listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
-        // Only development purpose (delete in production)
-        try {
-            insert(new Account("admin", "test", "dir"));
-            insert(new Account("admin2", "test", "dir"));
-            insert(new Account("admin3", "test", "dir"));
-        } catch (AccountInsertException | AccountCreateException ignore) {}
     }
 
     @Override
