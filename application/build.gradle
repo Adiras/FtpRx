@@ -4,7 +4,7 @@ plugins {
     // Plugin that makes it easy to work with JavaFX
     id 'org.openjfx.javafxplugin' version '0.1.0'
     // Plugin that assembles modules into a custom runtime image
-    id 'org.beryx.jlink' version '2.23.2'
+    id 'org.beryx.jlink' version '2.26.0'
 }
 
 dependencies {
