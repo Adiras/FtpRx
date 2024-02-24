@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Interface for basic operations on account repository.
+ * Interface for basic operations on an accounts.
  */
 public interface AccountRepository {
 
