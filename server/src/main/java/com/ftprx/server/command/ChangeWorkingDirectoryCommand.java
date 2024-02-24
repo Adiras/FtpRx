@@ -20,9 +20,6 @@ import com.ftprx.server.channel.Client;
 import com.ftprx.server.channel.Command;
 import com.ftprx.server.channel.WorkingDirectoryChangeException;
 
-import java.io.File;
-import java.util.logging.Logger;
-
 /*
  * This command allows the user to work with a different
  * directory or dataset for file storage or retrieval without
