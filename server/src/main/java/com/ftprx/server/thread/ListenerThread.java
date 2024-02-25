@@ -16,6 +16,8 @@
 
 package com.ftprx.server.thread;
 
+import com.ftprx.server.ClientManager;
+import com.ftprx.server.ServerConfig;
 import com.ftprx.server.util.SocketHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,9 +37,15 @@ public class ListenerThread extends Thread {
     private static final String THREAD_NAME = "Protocol Interpreter Listening Thread";
     private final Set<ClientConnectObserver> observers;
     private final ServerSocket server;
+    private final ClientManager clientManager;
+    private final ServerConfig config;
 
-    public ListenerThread(@NotNull ServerSocket server) {
+    public ListenerThread(@NotNull ServerSocket server,
+                          @NotNull ClientManager clientManager,
+                          @NotNull ServerConfig config) {
         this.server = Objects.requireNonNull(server, "Server must not be null");
+        this.clientManager = clientManager;
+        this.config = config;
         this.observers = Collections.newSetFromMap(new ConcurrentHashMap<>());
         setName(THREAD_NAME);
     }
@@ -47,6 +55,10 @@ public class ListenerThread extends Thread {
         Logger.info("Listening for connections on port {}", server.getLocalPort());
         while (!Thread.currentThread().isInterrupted()) {
             if (SocketHelper.isServerSocketOpen(server)) {
+                if (!canAcceptNewClient()) {
+                    Logger.warn("Client concurrent connection limit exceeded");
+                    continue;
+                }
                 try {
                     Socket client = server.accept();
                     notifyObservers(client);
@@ -56,6 +68,15 @@ public class ListenerThread extends Thread {
                 }
             }
         }
+    }
+
+    private boolean canAcceptNewClient() {
+        if (config.concurrentConnectionLimit() != 0) {
+            var currentConnections = clientManager.getClients().size();
+            var isConnectionLimitExceeded = config.concurrentConnectionLimit() <= currentConnections;
+            return !isConnectionLimitExceeded;
+        }
+        return true;
     }
 
     public void registerClientConnectObserver(@Nullable ClientConnectObserver observer) {

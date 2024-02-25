@@ -27,6 +27,8 @@ import org.aeonbits.owner.ConfigFactory;
 import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.time.Instant;
@@ -39,7 +41,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * It receives commands from the client, sends replies,
  * and manages the server data transfer process.
  */
-public class Server {
+public class Server implements ClientManager {
     private static final int SO_TIMEOUT = 3000;
     private static Server instance = null;
     private final List<Client> clients;
@@ -55,6 +57,8 @@ public class Server {
         this.accountRepository = new FileAccountRepository("accounts.json", AccountFileFormat.JSON);
         this.status = ServerStatus.STOPPED;
         this.config = ConfigFactory.create(ServerConfig.class);
+
+        createConfigFileIfNotExists();
     }
 
     /**
@@ -67,7 +71,7 @@ public class Server {
                 server = new ServerSocket();
                 server.setSoTimeout(SO_TIMEOUT);
                 server.bind(new InetSocketAddress(config.hostname(), config.port()));
-                listenerThread = new ListenerThread(server);
+                listenerThread = new ListenerThread(server, this, config);
                 listenerThread.registerClientConnectObserver(this::acceptClient);
                 listenerThread.start();
                 status = ServerStatus.RUNNING;
@@ -180,5 +184,19 @@ public class Server {
             instance = new Server();
         }
         return instance;
+    }
+
+    private void createConfigFileIfNotExists() {
+        try {
+            File configFile = new File("server.properties");
+            if (!configFile.exists()) {
+                if (configFile.createNewFile()) {
+                    Logger.info("Configuration file created: " + configFile.getAbsolutePath());
+                    config.store(new FileOutputStream(configFile), "FtpRx server properties");
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
