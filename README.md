@@ -1,4 +1,4 @@
-# FtpRx: Simple implementation of a FTP server
+# FtpRx: Simple implementation of FTP server
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f12e9dad759243c182529ea105a4004a)](https://app.codacy.com/gh/Adiras/FtpRx?utm_source=github.com&utm_medium=referral&utm_content=Adiras/FtpRx&utm_campaign=Badge_Grade)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
